@@ -1,2 +1,2 @@
 all:
-	./experiment.py data/balance.csv
+	./experiment.py data/iris.csv

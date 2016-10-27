@@ -3,6 +3,7 @@ from ece import *
 from ksskml import *
 
 import sys
+import csv
 
 # Load dataset
 datafile = sys.argv[1]
@@ -11,12 +12,12 @@ dbname = dbname[len(dbname) - 1]
 resampling = 200
 if len(sys.argv) > 2:
     resampling = int(sys.argv[2])
-dataset = Dataset(datafile, resampling)
+dataset = Dataset(datafile)
 
 print "DB: %s" % dataset
 
 # Parameters to test
-radiuses = xrange(1, 4, 2)
+radiuses = xrange(1, 31, 2)
 grains = [15]
 folds = xrange(0, 5)
 approaches = [ECEApproach.random]
@@ -28,43 +29,44 @@ amount = len(folds) * len(approaches) * \
     len(votingMethods) * len(grains) * len(radiuses)
 print "\t%i instances to process" % amount
 
-for fold in folds:
-    dataset.setCV(fold)
-    for approach in approaches:
-        for votingMethod in votingMethods:
-            for grain in grains:
-                for radius in radiuses:
-                    dataset.clearSupports()
+with open('results/r_%s' % dbname, 'wb') as csvfile:
+    writer = csv.writer(csvfile, delimiter=',')
+    headers = ['fold', 'radius', 'grain', 'limit', 'accuracy', 'bac']
+    writer.writerow(headers)
+    for fold in folds:
+        dataset.setCV(fold)
+        for approach in approaches:
+            for votingMethod in votingMethods:
+                for grain in grains:
+                    for radius in radiuses:
+                        dataset.clearSupports()
 
-                    fRadius = radius / 100.
+                        fRadius = radius / 100.
 
-                    configuration = {
-                        'radius': radius,
-                        'grain': grain,
-                        'limit': limit,
-                        'dimensions': [2],
-                        'eceApproach': approach,
-                        'exposerVotingMethod': votingMethod
-                    }
+                        configuration = {
+                            'radius': radius,
+                            'grain': grain,
+                            'limit': limit,
+                            'dimensions': [2],
+                            'eceApproach': approach,
+                            'exposerVotingMethod': votingMethod
+                        }
 
-                    ensemble = ECE(dataset, configuration)
-                    ensemble.learn()
-                    ensemble.predict()
-                    scores = dataset.score()
+                        ensemble = ECE(dataset, configuration)
+                        ensemble.learn()
+                        ensemble.predict()
+                        scores = dataset.score()
 
-                    entry = {
-                        "dataset": dbname,
-                        "fold": fold,
-                    }
+                        entry = {
+                            "dataset": dbname,
+                            "fold": fold,
+                        }
 
-                    entry.update(configuration)
-                    entry.update(scores)
+                        entry.update(configuration)
+                        entry.update(scores)
 
-                    # entry['eceApproach'] = entry['eceApproach'].value
-                    # entry['exposerVotingMethod'] = entry[
-                    #    'exposerVotingMethod'].value
-
-                    print "%02.2f %%\tF:%i/R:%.2f/G:%i/L:%i\t%.3f%%\t%s" % (
-                        100 * float(i) / amount, fold, fRadius, grain, limit,
-                        100 * entry['accuracy'], dbname)
-                    i += 1
+                        row = [fold, fRadius, grain, limit,
+                            entry['accuracy'], entry['bac']]
+                        print row
+                        writer.writerow(row)
+                        i += 1

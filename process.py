@@ -19,35 +19,47 @@ for filename in files:
         data.append({'filename': filename, 'records': records})
 
 # Przetwarzanie pojedynczego pliku z wynikami (`unit`)
-unit = data[0]
-unitSummary = {}
-print unit['filename']
+for unit in data:
+    unitSummary = {}
+    print unit['filename']
 
-# Grupowanie po unikalnych kombinacjach parametrów
-for record in unit['records']:
-    key = ('r%sg%sl%s' % (
-        record['radius'],
-        record['grain'],
-        record['limit']
-        ))
-    if key not in unitSummary:
-        unitSummary.update({key: []})
-    unitSummary[key].append(record)
+    # Grupowanie po unikalnych kombinacjach parametrów
+    for record in unit['records']:
+        key = ('r%sg%sl%s' % (
+            record['radius'],
+            record['grain'],
+            record['limit']
+            ))
+        if key not in unitSummary:
+            unitSummary.update({key: []})
+        unitSummary[key].append(record)
 
-# Podsumowanie grup
-for group in unitSummary:
-    records = unitSummary[group]
-    record = records[0]
-    summary = {
-        'accuracy': sum(float(d['accuracy']) for d in records) / len(records),
-        'bac': sum(float(d['bac']) for d in records) / len(records),
-        'radius': record['radius'],
-        'grain': record['grain'],
-        'limit': record['limit']
-    }
-    unitSummary[group] = summary
+    # Podsumowanie grup
+    for group in unitSummary:
+        records = unitSummary[group]
+        record = records[0]
+        summary = {
+            'accuracy': sum(float(d['accuracy']) for d in records) /
+            len(records),
+            'bac': sum(float(d['bac']) for d in records) / len(records),
+            'radius': record['radius'],
+            'grain': record['grain'],
+            'limit': record['limit']
+        }
+        unitSummary[group] = summary
 
-# Spłaszczenie i sortowanie wyniku
-unitSummary = sorted(unitSummary.values(), key=itemgetter(
-    'radius', 'grain', 'limit'))
-print unitSummary
+    # Spłaszczenie i sortowanie wyniku
+    unitSummary = sorted(unitSummary.values(), key=itemgetter(
+        'radius', 'grain', 'limit'))
+
+    # I zapis do pliku
+    with open(('products/%s' % unit['filename']), 'wb') as csvfile:
+        writer = csv.writer(
+            csvfile,
+            delimiter=',',
+            quotechar='"',
+            quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(unitSummary[0].keys())
+        # Nagłówki
+        for row in unitSummary:
+            writer.writerow(row.values())

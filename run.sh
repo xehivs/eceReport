@@ -1,5 +1,5 @@
 #!/bin/bash
-DATAFILES=./data/*
+DATAFILES=data/*
 
 for f in $DATAFILES
 do

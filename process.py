@@ -48,6 +48,10 @@ for unit in data:
         }
         unitSummary[group] = summary
 
+    # Wyłuskanie najlepszych wyników
+    bestbac = sorted(unitSummary.values(), key=itemgetter('bac'))[-1]
+    bestacc = sorted(unitSummary.values(), key=itemgetter('accuracy'))[-1]
+
     # Spłaszczenie i sortowanie wyniku
     unitSummary = sorted(unitSummary.values(), key=itemgetter(
         'radius', 'grain', 'limit'))

@@ -54,15 +54,23 @@ for unit in data:
         unitSummary[group] = summary
 
     # Wyłuskanie najlepszych wyników
-    bestbac = sorted(unitSummary.values(), key=itemgetter('bac'))[-1]
-    bestacc = sorted(unitSummary.values(), key=itemgetter('accuracy'))[-1]
+    bestbac = sorted(
+        unitSummary.values(),
+        key=itemgetter('bac'))[-1].copy()
+    bestacc = sorted(
+        unitSummary.values(),
+        key=itemgetter('accuracy'))[-1].copy()
 
     fnupdater = {'filename': unit['filename']}
     bestbac.update(fnupdater)
     bestacc.update(fnupdater)
 
+    print fnupdater
+
     bac.append(bestbac)
     acc.append(bestacc)
+
+    print bestbac
 
     # Spłaszczenie i sortowanie wyniku
     unitSummary = sorted(unitSummary.values(), key=itemgetter(

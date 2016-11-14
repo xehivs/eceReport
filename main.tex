@@ -297,6 +297,37 @@ The classification model (Figure \ref{fig:model}) is a three-level construction.
 
 \section{Ewaluacja metody}
 
+
+\begin{table}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.45\linewidth}{
+		\caption{Australian}
+	    \label{tab:results}
+		\centering
+		\begin{tabular}{lSSS}
+			\toprule
+			{radius} & {accuracy} & {bac} \\\midrule		    \csvreader[head to column names]{products/australian.csv}{}%
+		    {\radius & \accuracy & \bac\\}%
+		\end{tabular}
+	}
+	\hfill
+    \parbox{.45\linewidth}{
+		\caption{Balance}
+	    \label{tab:results}
+		\centering
+		\begin{tabular}{lSSS}
+			\toprule
+			{radius} & {accuracy} & {bac} \\\midrule		    \csvreader[head to column names]{products/balance.csv}{}%
+		    {\radius & \accuracy & \bac\\}%
+		\end{tabular}
+	}
+\end{table}
+
+
 \begin{table}[!ht]
     \sisetup{round-mode=places}
 	\caption{Najlepsze accuracy}

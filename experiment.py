@@ -17,8 +17,8 @@ dataset = Dataset(datafile)
 print "DB: %s" % dataset
 
 # Parameters to test
-radiuses = xrange(1, 31, 2)
-grains = [15]
+radiuses = [9]
+grains = xrange(1, 21, 2)
 folds = xrange(0, 5)
 approaches = [ECEApproach.random]
 limit = 15
@@ -29,7 +29,7 @@ amount = len(folds) * len(approaches) * \
     len(votingMethods) * len(grains) * len(radiuses)
 print "\t%i instances to process" % amount
 
-with open('results/r_%s' % dbname, 'wb') as csvfile:
+with open('results/g_%s' % dbname, 'wb') as csvfile:
     writer = csv.writer(csvfile, delimiter=',')
     headers = ['fold', 'radius', 'grain', 'limit', 'accuracy', 'bac']
     writer.writerow(headers)

@@ -1,3 +1,3 @@
 all:
-	pip install --upgrade -r requisites.txt
+	sudo pip install --upgrade -r requisites.txt
 	./run.sh

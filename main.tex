@@ -289,7 +289,7 @@ The classification model (Figure \ref{fig:model}) is a three-level construction.
 
 \begin{figure*}[hbt]
 	\center
-  \includegraphics[width=\textwidth]{figures/eec_model}
+  \includegraphics[width=\textwidth]{figures/ece_model}
   
   \caption{\textsc{ece} classification model diagram.}
 	\label{fig:model}
@@ -325,7 +325,113 @@ The classification model (Figure \ref{fig:model}) is a three-level construction.
 		    {\radius & \accuracy & \bac\\}%
 		\end{tabular}
 	}
+    \parbox{.45\linewidth}{
+		\caption{Breastcan}
+	    \label{tab:results}
+		\centering
+		\begin{tabular}{lSSS}
+			\toprule
+			{radius} & {accuracy} & {bac} \\\midrule		    \csvreader[head to column names]{products/breastcan.csv}{}%
+		    {\radius & \accuracy & \bac\\}%
+		\end{tabular}
+	}
+	\hfill
+    \parbox{.45\linewidth}{
+		\caption{Diabetes}
+	    \label{tab:results}
+		\centering
+		\begin{tabular}{lSSS}
+			\toprule
+			{radius} & {accuracy} & {bac} \\\midrule		    \csvreader[head to column names]{products/diabetes.csv}{}%
+		    {\radius & \accuracy & \bac\\}%
+		\end{tabular}
+	}
 \end{table}
+
+
+\begin{table}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.45\linewidth}{
+		\caption{German}
+	    \label{tab:results}
+		\centering
+		\begin{tabular}{lSSS}
+			\toprule
+			{radius} & {accuracy} & {bac} \\\midrule		    \csvreader[head to column names]{products/german.csv}{}%
+		    {\radius & \accuracy & \bac\\}%
+		\end{tabular}
+	}
+	\hfill
+    \parbox{.45\linewidth}{
+		\caption{Hayes}
+	    \label{tab:results}
+		\centering
+		\begin{tabular}{lSSS}
+			\toprule
+			{radius} & {accuracy} & {bac} \\\midrule		    \csvreader[head to column names]{products/hayes.csv}{}%
+		    {\radius & \accuracy & \bac\\}%
+		\end{tabular}
+	}
+    \parbox{.45\linewidth}{
+		\caption{Heart}
+	    \label{tab:results}
+		\centering
+		\begin{tabular}{lSSS}
+			\toprule
+			{radius} & {accuracy} & {bac} \\\midrule		    \csvreader[head to column names]{products/heart.csv}{}%
+		    {\radius & \accuracy & \bac\\}%
+		\end{tabular}
+	}
+	\hfill
+    \parbox{.45\linewidth}{
+		\caption{Ionosphere}
+	    \label{tab:results}
+		\centering
+		\begin{tabular}{lSSS}
+			\toprule
+			{radius} & {accuracy} & {bac} \\\midrule		    \csvreader[head to column names]{products/ionosphere.csv}{}%
+		    {\radius & \accuracy & \bac\\}%
+		\end{tabular}
+	}
+\end{table}
+
+
+
+
+\begin{table}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.45\linewidth}{
+		\caption{Iris}
+	    \label{tab:results}
+		\centering
+		\begin{tabular}{lSSS}
+			\toprule
+			{radius} & {accuracy} & {bac} \\\midrule		    \csvreader[head to column names]{products/iris.csv}{}%
+		    {\radius & \accuracy & \bac\\}%
+		\end{tabular}
+	}
+	\hfill
+    \parbox{.45\linewidth}{
+		\caption{Soybean}
+	    \label{tab:results}
+		\centering
+		\begin{tabular}{lSSS}
+			\toprule
+			{radius} & {accuracy} & {bac} \\\midrule		    \csvreader[head to column names]{products/soybean.csv}{}%
+		    {\radius & \accuracy & \bac\\}%
+		\end{tabular}
+	}
+\end{table}
+
+
 
 
 \begin{table}[!ht]

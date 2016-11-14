@@ -8,6 +8,10 @@ from os.path import isfile, join
 from operator import itemgetter
 import csv
 
+# Kontenery na podsumowania osiągów
+bac = []
+acc = []
+
 # Wczytajmy wszystkie dane i wrzućmy je do kontenera `data`
 data = []
 
@@ -52,6 +56,13 @@ for unit in data:
     bestbac = sorted(unitSummary.values(), key=itemgetter('bac'))[-1]
     bestacc = sorted(unitSummary.values(), key=itemgetter('accuracy'))[-1]
 
+    fnupdater = {'filename': unit['filename']}
+    bestbac.update(fnupdater)
+    bestacc.update(fnupdater)
+
+    bac.append(bestbac)
+    acc.append(bestacc)
+
     # Spłaszczenie i sortowanie wyniku
     unitSummary = sorted(unitSummary.values(), key=itemgetter(
         'radius', 'grain', 'limit'))
@@ -67,3 +78,25 @@ for unit in data:
         # Nagłówki
         for row in unitSummary:
             writer.writerow(row.values())
+
+# Zapis podsumowań
+with open('products/bac.csv', 'wb') as bacfile:
+    bacwriter = csv.writer(
+        bacfile,
+        delimiter=',',
+        quotechar='"',
+        quoting=csv.QUOTE_MINIMAL)
+    with open('products/acc.csv', 'wb') as accfile:
+        accwriter = csv.writer(
+            accfile,
+            delimiter=',',
+            quotechar='"',
+            quoting=csv.QUOTE_MINIMAL)
+
+        # Nagłówki
+        bacwriter.writerow(bac[0].keys())
+        accwriter.writerow(acc[0].keys())
+        for row in bac:
+            bacwriter.writerow(row.values())
+        for row in acc:
+            accwriter.writerow(row.values())

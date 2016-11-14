@@ -25,6 +25,7 @@ for filename in files:
 # Przetwarzanie pojedynczego pliku z wynikami (`unit`)
 for unit in data:
     unitSummary = {}
+    unit['filename'] = unit['filename'][2:-4]
     print unit['filename']
 
     # Grupowanie po unikalnych kombinacjach parametrów
@@ -68,7 +69,7 @@ for unit in data:
         'radius', 'grain', 'limit'))
 
     # I zapis do pliku
-    with open(('products/%s' % unit['filename']), 'wb') as csvfile:
+    with open(('products/%s.csv' % unit['filename']), 'wb') as csvfile:
         writer = csv.writer(
             csvfile,
             delimiter=',',

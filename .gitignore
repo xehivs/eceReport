@@ -1,3 +1,6 @@
+.texpadtmp
+*.pdf
+
 .DS_Store
 
 ece.e*

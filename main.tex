@@ -540,9 +540,7 @@ Tabele \ref{tab:accuracy} oraz \ref{tab:bac} przedstawiają najlepsze osiągi dl
 		\begin{tabular}{lSS}
 			\toprule
 			{zbiór danych} & {promień} & {accuracy} \\\midrule		    \csvreader[head to column names]{products/acc.csv}{}%
-		    {\emph{\filename} & \radius & \accuracy\\}%
-		    \bfseries średni promień & 0.098\\
-		    \bottomrule
+		    {\emph{\filename} & \radiusr & \accuracyr\\}
 		\end{tabular}
 	}
 	\hfill
@@ -553,9 +551,29 @@ Tabele \ref{tab:accuracy} oraz \ref{tab:bac} przedstawiają najlepsze osiągi dl
 		\begin{tabular}{lS>{\color{red}}S}
 			\toprule
 			{zbiór danych} & {promień} & {\textsc{bac}} \\\midrule		    \csvreader[head to column names]{products/bac.csv}{}%
-		    {\emph{\filename} & \radius & \bac\\}%
-		    \bfseries średni promień & 0.122\\
-		    \bottomrule
+		    {\emph{\filename} & \radiusr & \bacr\\}
+		\end{tabular}
+	}
+	
+	 \parbox{.45\linewidth}{   
+		\caption{Najlepsze \emph{ziarno} względem accuracy}
+	    \label{tab:accuracy}
+		\centering
+		\begin{tabular}{lSS}
+			\toprule
+			{zbiór danych} & {ziarno} & {accuracy} \\\midrule		    \csvreader[head to column names]{products/acc.csv}{}%
+		    {\emph{\filename} & \graing & \accuracyg\\}
+		\end{tabular}
+	}
+	\hfill
+	\parbox{.45\linewidth}{
+		\caption{Najlepsze \emph{ziarno} względem \textsc{bac}}
+	    \label{tab:bac}
+		\centering
+		\begin{tabular}{lS>{\color{red}}S}
+			\toprule
+			{zbiór danych} & {ziarno} & {\textsc{bac}} \\\midrule		    \csvreader[head to column names]{products/bac.csv}{}%
+		    {\emph{\filename} & \graing & \bacg\\}
 		\end{tabular}
 	}
 	
@@ -563,8 +581,8 @@ Tabele \ref{tab:accuracy} oraz \ref{tab:bac} przedstawiają najlepsze osiągi dl
     	\begin{tikzpicture}
 		\begin{axis}[
 			    ybar,
-			    width = 1.04\linewidth,
-			    bar width=0.2cm,
+			    width = 1.1\linewidth,
+			    bar width=0.15cm,
 			    height = 6cm,
 			    symbolic x coords={australian, balance, breastcan, diabetes, german, hayes, heart, ionosphere, iris, soybean},			    
 			    xtick=data,
@@ -577,10 +595,10 @@ Tabele \ref{tab:accuracy} oraz \ref{tab:bac} przedstawiają najlepsze osiągi dl
 				ticklabel style={font=\tiny,fill=white},				
 			    x tick label style={rotate=30,anchor=east},	
 		    ]
-			\addplot[black, fill=white, postaction={pattern=north east lines}] table[x=filename, y=r_accuracy, col sep=comma] {products/acc.csv};
-			\addplot[red, fill=white, pattern color = red, postaction={pattern=north east lines}] table[x=filename, y=r_bac, col sep=comma] {products/bac.csv};
-			\addplot[green, fill=white, postaction={pattern=north east lines}] table[x=filename, y=g_accuracy, col sep=comma] {products/acc.csv};
-			\addplot[blue, fill=white, pattern color = red, postaction={pattern=north east lines}] table[x=filename, y=g_bac, col sep=comma] {products/bac.csv};
+			\addplot[black, fill=white, postaction={pattern=north east lines}] table[x=filename, y=accuracyr, col sep=comma] {products/acc.csv};
+			\addplot[red, fill=white, pattern color = red, postaction={pattern=north east lines}] table[x=filename, y=bacr, col sep=comma] {products/bac.csv};
+			\addplot[black, fill=white, postaction={pattern= sixpointed stars}] table[x=filename, y=accuracyg, col sep=comma] {products/acc.csv};
+			\addplot[red, fill=white, pattern color = red, postaction={pattern= sixpointed stars}] table[x=filename, y=bacr, col sep=comma] {products/bac.csv};
 		\end{axis}
 		\end{tikzpicture}
     }

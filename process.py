@@ -104,7 +104,7 @@ for item in accSummary:
     for record in accSummary[item]:
         exp = record['experiment']
         for key in ['accuracy', 'bac', 'limit', 'radius', 'grain']:
-            record['%s_%s' % (key, exp)] = record.pop(key)
+            record['%s%s' % (key, exp)] = record.pop(key)
         newcomer.update(record)
     accSummary[item] = newcomer
 
@@ -113,7 +113,7 @@ for item in bacSummary:
     for record in bacSummary[item]:
         exp = record['experiment']
         for key in ['accuracy', 'bac', 'limit', 'radius', 'grain']:
-            record['%s_%s' % (key, exp)] = record.pop(key)
+            record['%s%s' % (key, exp)] = record.pop(key)
         newcomer.update(record)
     bacSummary[item] = newcomer
 

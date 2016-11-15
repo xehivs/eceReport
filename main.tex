@@ -54,9 +54,15 @@
 
 \section{ECE --- \emph{Exposer Classifier Ensemble}}
 
-Recently, the \emph{representation learning} is the fucus of intense research of machine learning community. The underlying idea is that the key for successful discrimination of difficult datasets is a good feature extraction. A transformation of the data space into another space where classification is easy. This work  proposes a novel transformation into feature space that follows a photographic intuition: that we can build from pairs of features in original space some kind of photographic plate where the sample data are projected to create a picture of the data distribution in the feature subspace defined by the feature pair. These photographic plates may be used as individuals of a classifier ensemble. The approach allows a natural definition of a confidence weight affecting each individual classifier out for the construction of a combination rule used by the ensemble. Hence the name \emph{Paired Feature Multilayer Ensemble} (\textsc{pfme}).  The approach is naturally naive parallel, insensitive to sample size, robust to dimension increase, and allows a regularization in feature space which is independent from original input space. The proposed approach was evaluated on the basis of the computer experiments carried out on the benchmark datasets.
+Ostatnimi czasy nurt \emph{representation learning} staje się coraz bardziej witalnym tematem badań dla środowiska uczenia maszynowego. Leżąca u jego podstaw idea twierdzi, że kluczem do skutecznej klasyfikacji trudnych zbiorów danych, jest odpowiednia ekstrakcja cech. Transformacja przestrzeni danych dostępnych w zbiorze do innej przestrzeni, w której samo zadanie się trywializuje. 
 
-\subsection{\emph{Exposer}}
+Poniższy raport prezentuje metodę transformacji przestrzeni cech, inspirowaną intuicją fotograficzną, sugerującą, że możemy wykorzystać parę cech zbioru do stworzenia \emph{wirtualnej kliszy}, którą zamiast na światło, eksponujemy na wiązkę próbek. Stąd sama jej główna struktura nazywana jest \emph{ekspozerem}.
+
+Tak stworzone struktury, można wykorzystywać zarówno jako klasyfikatory bazowe, jak i -- kiedy decydujemy się na zbiór podzbiorów cech -- komitety klasyfikatorów. Takie podejście jest, jak w większości metod obrazowych, łatwe do zrównoleglenia, jak i niezależne od wielkości próbki, odporne na zwiększenie liczby cech zbioru uczącego, jak i pozwala na regularyzację w przestrzeni cech, przeprowadzaną niezależnie od przestrzeni oryginalnego zbioru.
+
+Proponowana metoda została przetestowana eksperymentalnie na wyborze dziesięciu zbiorów benchmarkowych.
+
+\subsection{\emph{Ekspozer}}
 \label{exposer}
 
 \emph{Histogram} definiujemy jako \emph{graficzną reprezentację rozkładu danych numerycznych}. Jest estymacją rozkładu prawdopodobieństwa zmiennej ciągłej, po raz pierwszy wprowadzoną przez Karla Pearsona \cite{1895RSPTA.186..343P}. 
@@ -205,7 +211,7 @@ Taki ekspozer pozwalałby na poprawną kolorową wizualizację jedynie, gdy sił
 \end{equation}
 
 
-\subsection{\emph{Exposer} Classifier}
+\subsection{\emph{Expozer} jako klasyfikator bazowy}
 \label{exposerclassifier}
 
 Wykorzystanie ekspozerów jako narzędzia klasyfikacji jest relatywnie prostym zadaniem. Załóżmy, że dysponujemy ekspozerem, naświetlonym już na zbiorze uczącym oraz próbkę $x_k$ ze zbioru testowego.
@@ -228,7 +234,7 @@ Predykcja ($\Psi$) jest indeksem klasy o największej wartości w sygnaturze kom
 	\Psi(x_k) = \mathop{argmax}\limits_{i \in \mathcal{M}}\Bigg(pix_i\Big(fin(x_k)\Big)\Bigg)
 \end{equation}
 
-\subsection{\emph{Exposer} Classifier Ensemble}
+\subsection{Komitet klasyfikatorów --- \emph{Exposer} Classifier Ensemble}
 \label{exposerclassifierensemble}
 
 Aby ustanowić komitet ekspozerów, procedura predykcji potrzebuje lekkiego rozwinięcia. Załóżmy, że dysponujemy próbką $x_k$, którą chcemy sklasyfikować.
@@ -395,6 +401,8 @@ Tabele 2--11 przedstawiają wyniki osiągnięte przez algorytm dla \emph{ziarna}
 
 \FloatBarrier
 
+Na podstawie zaprezentowanych przebiegów można zaobserwować, że w wybranym zakresie promienia, jeśli ziarno ustalimy na relatywnie niedużej wartości, zależność pomiędzy nim a efektywnością klasyfikacji jest znacznie słabsza niż w wypadku tej z testów wstępnych.
+
 Tabele \ref{tab:accuracy} oraz \ref{tab:bac} przedstawiają najlepsze osiągi dla każdej bazy testowej, względem \emph{accuracy} i \emph{balanced accuracy}, dla problemów wieloklasowych wyliczonego jako średnia z testów \emph{jeden kontra wszyscy}. 
 
 \begin{table*}[!ht]
@@ -454,15 +462,13 @@ Tabele \ref{tab:accuracy} oraz \ref{tab:bac} przedstawiają najlepsze osiągi dl
     }
 \end{table*}
 
+Wyniki sumaryczne potwierdzają wysoką zdolność algorytmu do poprawnej klasyfikacji, przy niedużych promieniach, oscylujących w granicach \oldstylenums{10}\%.
+
 \FloatBarrier
 
 \section{Wnioski}
 
-In this paper, we present a novel classifier, formulated as an ensemble of multi-spectral images generated from paired features of data. Each image corresponds to a feature pair subspace, and each spectral layer to a class.  This approach has very interesting properties, such as robustness to the curse of dimensionality and naive parallelism, which allows big data processing naturally.  
-
-We showed, that this approach leads to create classifier that are competitive to existing ones and able to outperform them for some kind of data. We showed that it could be used for real-life applications.
-
-For future works we plan to develop an heuristic method of feature combination limitation, to improve performance of \textsc{pfme} classifier and to adapt the proposed model to deal with the fast changing streaming data \cite{Wozniak2011}. Additional work maybe directed to the formal analysis of this feature extraction metaphor in the framework of joint distribution approximation by products of variable subset joint distributions. 
+Powyższy raport prezentuje klasyfikator sformułowany jako komitet wielospektralnych obrazów generowanych na podstawie kombinowanych podzbiorów cech zbioru danych. Każdy obraz opisuje wybraną podprzestrzeń cech, a każda jego warstwa -- odnosi się do jednej klasy problemu. Podejście tego typu przejawia odporność na klątwę wymiarowości, co pozwala na efektywne przetwarzanie danych wielowymiarowych. Algorytm bez przeciwskazań może być używany do rozwiązywania realnych problemów.
 
 \bibliographystyle{unsrt}
 \bibliography{biblography}

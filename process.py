@@ -14,7 +14,6 @@ acc = []
 
 # Wczytajmy wszystkie dane i wrzućmy je do kontenera `data`
 data = []
-
 directory = 'results'
 files = [f for f in listdir(directory) if isfile(join(directory, f))]
 for filename in files:
@@ -25,8 +24,8 @@ for filename in files:
 # Przetwarzanie pojedynczego pliku z wynikami (`unit`)
 for unit in data:
     unitSummary = {}
-    unit['filename'] = unit['filename'][2:-4]
-    print unit['filename']
+    dbname = unit['filename'][2:-4]
+    print "%s (db:%s)" % (unit['filename'], dbname)
 
     # Grupowanie po unikalnych kombinacjach parametrów
     for record in unit['records']:
@@ -48,7 +47,7 @@ for unit in data:
             len(records),
             'bac': sum(float(d['bac']) for d in records) / len(records),
             'radius': record['radius'],
-            'grain': record['grain'],
+            'grain': int(record['grain']),
             'limit': record['limit']
         }
         unitSummary[group] = summary
@@ -61,23 +60,19 @@ for unit in data:
         unitSummary.values(),
         key=itemgetter('accuracy'))[-1].copy()
 
-    fnupdater = {'filename': unit['filename']}
+    fnupdater = {'filename': dbname, 'experiment': unit['filename'][:1]}
     bestbac.update(fnupdater)
     bestacc.update(fnupdater)
 
-    print fnupdater
-
     bac.append(bestbac)
     acc.append(bestacc)
-
-    print bestbac
 
     # Spłaszczenie i sortowanie wyniku
     unitSummary = sorted(unitSummary.values(), key=itemgetter(
         'radius', 'grain', 'limit'))
 
     # I zapis do pliku
-    with open(('products/%s.csv' % unit['filename']), 'wb') as csvfile:
+    with open(('products/%s' % unit['filename']), 'wb') as csvfile:
         writer = csv.writer(
             csvfile,
             delimiter=',',
@@ -87,6 +82,41 @@ for unit in data:
         # Nagłówki
         for row in unitSummary:
             writer.writerow(row.values())
+
+# Podsumowanie wielu eksperymentów
+accSummary = {}
+bacSummary = {}
+
+for item in acc:
+    key = item['filename']
+    if key not in accSummary:
+        accSummary.update({key: []})
+    accSummary[key].append(item.copy())
+
+for item in bac:
+    key = item['filename']
+    if key not in bacSummary:
+        bacSummary.update({key: []})
+    bacSummary[key].append(item.copy())
+
+for item in accSummary:
+    newcomer = {}
+    for record in accSummary[item]:
+        exp = record['experiment']
+        for key in ['accuracy', 'bac', 'limit', 'radius', 'grain']:
+            record['%s_%s' % (key, exp)] = record.pop(key)
+        newcomer.update(record)
+    accSummary[item] = newcomer
+
+for item in bacSummary:
+    newcomer = {}
+    for record in bacSummary[item]:
+        exp = record['experiment']
+        for key in ['accuracy', 'bac', 'limit', 'radius', 'grain']:
+            record['%s_%s' % (key, exp)] = record.pop(key)
+        newcomer.update(record)
+    bacSummary[item] = newcomer
+
 
 # Zapis podsumowań
 with open('products/bac.csv', 'wb') as bacfile:
@@ -103,9 +133,9 @@ with open('products/bac.csv', 'wb') as bacfile:
             quoting=csv.QUOTE_MINIMAL)
 
         # Nagłówki
-        bacwriter.writerow(bac[0].keys())
-        accwriter.writerow(acc[0].keys())
-        for row in bac:
+        bacwriter.writerow(bacSummary.values()[0].keys())
+        accwriter.writerow(accSummary.values()[0].keys())
+        for row in bacSummary.values():
             bacwriter.writerow(row.values())
-        for row in acc:
+        for row in accSummary.values():
             accwriter.writerow(row.values())

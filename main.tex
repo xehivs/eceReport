@@ -51,6 +51,39 @@
 	\end{tikzpicture}
 }{}
 
+\newenvironment{rideg}[2]
+{
+	\caption{Zbiór \emph{#2}}
+    \label{tab:results}
+	\centering
+	\begin{tabular}{lS>{\color{red}}S}
+		\\\toprule{ziarno} & {accuracy} & {\textsc{bac}} \\\midrule	    \csvreader[head to column names]{#1}{}%
+	    {\grain & \accuracy & \bac\\}%
+	\end{tabular}
+	
+	\begin{tikzpicture}
+	\begin{axis}[
+	    grid=both,
+	    grid style={line width=.1pt, draw=gray!10},
+	    major grid style={line width=.2pt,draw=gray!50},
+	    width=6cm,
+	    height=8cm,
+	    xmin=1, xmax=19,
+	    ymin=.0, ymax=1,
+	    ytick = {.5, .6, .7, .8, .9, 1},
+	    yticklabels = { ~, 60\%, ~, 80\%, ~, 100\%},
+	    xtick = {1, 4, 7, 10, 13, 16, 19},
+		xticklabels = {~, 4,7,10,13,16,~},
+		xlabel = Promień,
+		minor tick num=2,
+		xlabel style={font=\tiny,fill=white},
+		ticklabel style={font=\tiny,fill=white}		]
+		\addplot[color=black] table [x=grain, y=accuracy, col sep=comma] {#1};
+		\addplot[color=red] table [x=grain, y=bac, col sep=comma] {#1};
+	\end{axis}
+	\end{tikzpicture}
+}{}
+
 \maketitle
 \newpage
 
@@ -298,7 +331,7 @@ Krótki przegląd wszystkich wybranych zbiorów zawiera się w Tabeli \ref{tab:
         table head=\toprule zbiór danych & l. cech & l. próbek & l. klas \\\midrule,
         late after line = \\,
         late after last line = \\\bottomrule]%
-    {products/comparison.csv }{dataset=\dataset,attributes=\attributes,samples=\samples,classes=\classes}%
+    {comparison.csv }{dataset=\dataset,attributes=\attributes,samples=\samples,classes=\classes}%
     {\emph{\dataset} & \attributes & \samples & \classes}%
 \end{table*}
 
@@ -323,6 +356,8 @@ Ustalenie wartości \emph{limitu} również na \oldstylenums{15} skutkuje stworz
 
 \subsection{Rezultaty}
 
+\subsubsection{Badanie wpływu promienia}
+
 Tabele 2--11 przedstawiają wyniki osiągnięte przez algorytm dla \emph{ziarna} \oldstylenums{15} i parametrów \emph{promienia} z przedziału \oldstylenums{1}--\oldstylenums{30}. Testy zostały przeprowadzone z wykorzystaniem walidacji krzyżowej \oldstylenums5v\oldstylenums2.
 
 \begin{table*}[htb]
@@ -332,11 +367,11 @@ Tabele 2--11 przedstawiają wyniki osiągnięte przez algorytm dla \emph{ziarna}
     	round-integer-to-decimal
     }
     \parbox{.45\linewidth}{
-	    \begin{ride}{products/australian.csv}{Australian}\end{ride}
+	    \begin{ride}{products/r_australian.csv}{Australian}\end{ride}
 	}
 	\hfill
     \parbox{.45\linewidth}{
-	    \begin{ride}{products/balance.csv}{Balance}\end{ride}
+	    \begin{ride}{products/r_balance.csv}{Balance}\end{ride}
 	}
 \end{table*}
 
@@ -347,11 +382,11 @@ Tabele 2--11 przedstawiają wyniki osiągnięte przez algorytm dla \emph{ziarna}
     	round-integer-to-decimal
     }
     \parbox{.45\linewidth}{
-	    \begin{ride}{products/breastcan.csv}{Breastcan}\end{ride}
+	    \begin{ride}{products/r_breastcan.csv}{Breastcan}\end{ride}
 	}
 	\hfill
     \parbox{.45\linewidth}{
-	    \begin{ride}{products/diabetes.csv}{Diabetes}\end{ride}
+	    \begin{ride}{products/r_diabetes.csv}{Diabetes}\end{ride}
 	}
 \end{table*}
 
@@ -363,11 +398,11 @@ Tabele 2--11 przedstawiają wyniki osiągnięte przez algorytm dla \emph{ziarna}
     	round-integer-to-decimal
     }
     \parbox{.45\linewidth}{
-	    \begin{ride}{products/german.csv}{German}\end{ride}
+	    \begin{ride}{products/r_german.csv}{German}\end{ride}
 	}
 	\hfill
     \parbox{.45\linewidth}{
-	    \begin{ride}{products/hayes.csv}{Hayes}\end{ride}
+	    \begin{ride}{products/r_hayes.csv}{Hayes}\end{ride}
 	}
 \end{table*}
 
@@ -378,11 +413,11 @@ Tabele 2--11 przedstawiają wyniki osiągnięte przez algorytm dla \emph{ziarna}
     	round-integer-to-decimal
     }
     \parbox{.45\linewidth}{
-	    \begin{ride}{products/heart.csv}{Heart}\end{ride}
+	    \begin{ride}{products/r_heart.csv}{Heart}\end{ride}
 	}
 	\hfill
     \parbox{.45\linewidth}{
-	    \begin{ride}{products/ionosphere.csv}{Ionosphere}\end{ride}
+	    \begin{ride}{products/r_ionosphere.csv}{Ionosphere}\end{ride}
 	}
 \end{table*}
 
@@ -393,15 +428,100 @@ Tabele 2--11 przedstawiają wyniki osiągnięte przez algorytm dla \emph{ziarna}
     	round-integer-to-decimal
     }
     \parbox{.45\linewidth}{
-	    \begin{ride}{products/iris.csv}{Iris}\end{ride}
+	    \begin{ride}{products/r_iris.csv}{Iris}\end{ride}
 	}
 	\hfill
     \parbox{.45\linewidth}{
-	    \begin{ride}{products/soybean.csv}{Soybean}\end{ride}
+	    \begin{ride}{products/r_soybean.csv}{Soybean}\end{ride}
 	}
 \end{table*}
 
 \FloatBarrier
+
+
+\subsubsection{Badanie wpływu ziarna}
+
+Tabele 2--23 przedstawiają wyniki osiągnięte przez algorytm dla \emph{promienia} \oldstylenums{9} i parametrów \emph{ziarna} z przedziału \oldstylenums{1}--\oldstylenums{30}. Testy zostały przeprowadzone z wykorzystaniem walidacji krzyżowej \oldstylenums5v\oldstylenums2.
+
+\begin{table*}[htb]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.45\linewidth}{
+	    \begin{rideg}{products/g_australian.csv}{Australian}\end{rideg}
+	}
+	\hfill
+    \parbox{.45\linewidth}{
+	    \begin{rideg}{products/g_balance.csv}{Balance}\end{rideg}
+	}
+\end{table*}
+
+\begin{table*}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.45\linewidth}{
+	    \begin{rideg}{products/g_breastcan.csv}{Breastcan}\end{rideg}
+	}
+	\hfill
+    \parbox{.45\linewidth}{
+	    \begin{rideg}{products/g_diabetes.csv}{Diabetes}\end{rideg}
+	}
+\end{table*}
+
+
+\begin{table*}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.45\linewidth}{
+	    \begin{rideg}{products/g_german.csv}{German}\end{rideg}
+	}
+	\hfill
+    \parbox{.45\linewidth}{
+	    \begin{rideg}{products/g_hayes.csv}{Hayes}\end{rideg}
+	}
+\end{table*}
+
+\begin{table*}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.45\linewidth}{
+	    \begin{rideg}{products/g_heart.csv}{Heart}\end{rideg}
+	}
+	\hfill
+    \parbox{.45\linewidth}{
+	    \begin{rideg}{products/g_ionosphere.csv}{Ionosphere}\end{rideg}
+	}
+\end{table*}
+
+\begin{table*}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.45\linewidth}{
+	    \begin{rideg}{products/g_iris.csv}{Iris}\end{rideg}
+	}
+	\hfill
+    \parbox{.45\linewidth}{
+	    \begin{rideg}{products/g_soybean.csv}{Soybean}\end{rideg}
+	}
+\end{table*}
+
+\FloatBarrier
+
+\subsection{Podsumowanie}
 
 Na podstawie zaprezentowanych przebiegów można zaobserwować, że w wybranym zakresie promienia, jeśli ziarno ustalimy na relatywnie niedużej wartości, zależność pomiędzy nim a efektywnością klasyfikacji jest znacznie słabsza niż w wypadku tej z testów wstępnych.
 
@@ -457,8 +577,10 @@ Tabele \ref{tab:accuracy} oraz \ref{tab:bac} przedstawiają najlepsze osiągi dl
 				ticklabel style={font=\tiny,fill=white},				
 			    x tick label style={rotate=30,anchor=east},	
 		    ]
-			\addplot[black, fill=white, postaction={pattern=north east lines}] table[x=filename, y=accuracy, col sep=comma] {products/acc.csv};
-			\addplot[red, fill=white, pattern color = red, postaction={pattern=north east lines}] table[x=filename, y=bac, col sep=comma] {products/bac.csv};
+			\addplot[black, fill=white, postaction={pattern=north east lines}] table[x=filename, y=r_accuracy, col sep=comma] {products/acc.csv};
+			\addplot[red, fill=white, pattern color = red, postaction={pattern=north east lines}] table[x=filename, y=r_bac, col sep=comma] {products/bac.csv};
+			\addplot[green, fill=white, postaction={pattern=north east lines}] table[x=filename, y=g_accuracy, col sep=comma] {products/acc.csv};
+			\addplot[blue, fill=white, pattern color = red, postaction={pattern=north east lines}] table[x=filename, y=g_bac, col sep=comma] {products/bac.csv};
 		\end{axis}
 		\end{tikzpicture}
     }

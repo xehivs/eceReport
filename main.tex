@@ -53,7 +53,7 @@
 
 \section{ECE --- \emph{Exposer Classifier Ensemble}}
 
-During the research on \textsc{ece} algorithm the development environment changed from \textsc{matlab} to \emph{Python}, which, despite the fact of obvious coding effectiveness gain, brought also a change of approach to the development process itself. Change here entails also the involuntarily change of the approach to the description of algorithm. After short introduction to the idea, this section will present a chain of development decisions leading to a final conception. Each decision will be motivated with a simple experiment showing how it affects to the classification accuracy, and each will introduce a separate element of possible \textsc{eec} configuration.
+Recently, the \emph{representation learning} is the fucus of intense research of machine learning community. The underlying idea is that the key for successful discrimination of difficult datasets is a good feature extraction. A transformation of the data space into another space where classification is easy. This work  proposes a novel transformation into feature space that follows a photographic intuition: that we can build from pairs of features in original space some kind of photographic plate where the sample data are projected to create a picture of the data distribution in the feature subspace defined by the feature pair. These photographic plates may be used as individuals of a classifier ensemble. The approach allows a natural definition of a confidence weight affecting each individual classifier out for the construction of a combination rule used by the ensemble. Hence the name \emph{Paired Feature Multilayer Ensemble} (\textsc{pfme}).  The approach is naturally naive parallel, insensitive to sample size, robust to dimension increase, and allows a regularization in feature space which is independent from original input space. The proposed approach was evaluated on the basis of the computer experiments carried out on the benchmark datasets.
 
 \subsection{\emph{Exposer}}
 \label{exposer}
@@ -254,45 +254,6 @@ Bardziej złożony model wprowadza jednak miarę pewności decyzji wobec każdej
 	\theta _i = \frac{\sum_{g_u=1}^{G}\sum_{g_v=1}^{G}\Big[ argmax(pix) = i \;\wedge\; pix_i > threshold\Big]\;S(pix)}{\sum_{g_u=1}^{G}\sum_{g_v=1}^{G} \Big[ argmax(pix) = i\Big]} 
 \end{equation}
 
-\begin{comment}
-\paragraph{Metody głosowania}
-
-W obrębie komitetów ekspozerów wprowadzone zostało pięć propozycji głosowania.
-
-\begin{itemize}
-		\item \textbf{Brak miary} --- każdy ekspozer ma taki sam wpływ na decyzję komitetu.
-
-\begin{equation}
-	\Pi_\textrm{\textsc{a}}(x_k) = \mathop{argmax}\limits_{i \in \mathcal{M}}\Bigg(\sum_{l = 1}^N pix^{(l)}\Big(\Psi_l(x_k)\Big)\Bigg)
-\end{equation}
-
-	\item \textbf{Pojedyncza miara pewności dla klasy} --- dla każdego \emph{ekspozera} w komitecie wyliczamy uśredniony wektor wsparć dla każdej z klas. Wektor wsparcia komitetu to suma tych wektorów.
-
-\begin{equation}
-	\Pi_\textrm{\textsc{b}}(x_k) = \mathop{argmax}\limits_{i \in \mathcal{M}}\Bigg(\sum_{l = 1}^N\theta^{(l)}\cdot pix^{(l)}\Big(fin(x_k)\Big)\Bigg)
-\end{equation}
-
-	\item \textbf{Pojedyncza miara pewności dla ekspozera} --- The linear combination of the  $\beta_i$ with $\theta_i$ weights our voting vector ($V$).
-
-\begin{equation}
-	\Pi_\textrm{\textsc{c}}(x_k) = \mathop{argmax}\limits_{i \in \mathcal{M}}\Bigg(\sum_{l = 1}^N mean(\theta^{(l)})\cdot pix^{(l)}\Big(fin(x_k)\Big)\Bigg)
-\end{equation}
-
-	\item Two-level confidence measure
-
-\begin{equation}
-	\Pi_\textrm{\textsc{d}}(x_k) = \mathop{argmax}\limits_{i \in \mathcal{M}}\Bigg(\sum_{l = 1}^N mean(\theta^{(l)})\cdot \theta^{(l)} \cdot pix^{(l)}\Big(fin(x_k)\Big)\Bigg)
-\end{equation}
-
-	\item Three-level confidence measure
-
-\begin{equation}
-	\Pi_\textrm{\textsc{e}}(x_k) = \mathop{argmax}\limits_{i \in \mathcal{M}}\Bigg(\sum_{l = 1}^N mean(\theta^{(l)})\cdot \theta^{(l)} \cdot pix^{(l)}\Big(fin(x_k)\Big)\cdot S\bigg(pix^{(l)}\Big(fin(x_k)\Big)\bigg)\Bigg)
-\end{equation}
-
-\end{itemize}
-\end{comment}
-
 \paragraph{Model klasyfikacji}
 
 Wynikowy model klasyfikacji (Rysunek \ref{fig:model}) jest konstrukcją trójpoziomową. Na najniższym znajdują się monochromatyczne warstwy, które budują klasyfikatory składowe drugiego poziomu, określone kombinacją cech $\gamma_i$ oraz wagą $\theta_i$ używaną w metodach głosowania w obrębie komitetu. W najwyższej warstwie, klasyfikatory składowe łączone są w komitet \textsc{ece}.
@@ -307,7 +268,68 @@ Wynikowy model klasyfikacji (Rysunek \ref{fig:model}) jest konstrukcją trójpo
 
 \section{Ewaluacja metody}
 
-\begin{table}[!ht]
+\subsection{Datasets}
+
+For the evaluation of algorithm capabilities, we have used twenty five benchmark datasets. 
+Most of them are coming from \textsc{ucimlr}\cite{asuncion2007uci}, which was chosen to provide diverse problems to solve. Selection was made according to the following guidelines: 
+
+\begin{itemize}
+	\item Datasets should include both binary (\emph{15 datasets}) and multi-label problems (\emph{10 datasets, from 3, up to 16 classes}).
+	\item Datasets should include as well imbalanced (\emph{i.e. Yeast3}) as balanced data (\emph{Wine}).
+	\item Datasets should vary from low- to high-dimensionality (\emph{from 4 to 60 features}).
+	\item Datasets should be as well sparse (\emph{43 samples for Soybean}) and dense (\emph{10000 samples for Salinas}).
+	\item Datasets should include both continuous (\emph{Iris}), discrete (\emph{Balance}) and descriptive features (\emph{Spambase}).
+\end{itemize}
+
+A short overview of every chosen dataset is presented in Table \ref{tab:datasets_overview}.
+
+\begin{table*}[!ht]
+	\caption{Datasets overwiew.}
+	\label{tab:datasets_overview}
+	\centering
+	\csvreader[tabular=lccc,
+        table head=\toprule Dataset & Features & Samples & Classes \\\midrule,
+        late after line = \\,
+        late after last line = \\\bottomrule]%
+    {products/comparison.csv }{dataset=\dataset,attributes=\attributes,samples=\samples,classes=\classes}%
+    {\emph{\dataset} & \attributes & \samples & \classes}%
+\end{table*}
+
+\emph{Salinas} and \emph{SalinasA},  are hyper spectral images of an agricultural land, collected  by the \textsc{aviris} sensor at \textsc{nasa}s \emph{Jet Propulsion Laboratory}. \emph{SkinA} is an hyperspectral image used to test skin detection in bad light conditions. Spectral bands in these datasets was reduced from more than two hundred to eleven features, using the trick of artificial photoreceptors \cite{Krawczyk2014}.
+
+Eight databases (\emph{Liver, Diabetes, Heart, Australian, German, Breastcan, Ionosphere} and \emph{Sonar}) were selected to compare \textsc{pfme} with some published representation learning methods \cite{Czarnecki2015MaximumRepresentation}. \emph{Yeast3} is an imbalanced database, used during algorithm formulation and development  to assure its good performance on this kind of data.
+
+\subsection{Środowisko eksperymentalne}
+
+The experimental framework was constructed in \textsc{matlab} environment. Full code of all experiments, with all datasets is available on the Github repository ({\url{https://github.com/w4k2/pfme}). Due to the big number of testing datasets, the parameters  \emph{grain} and \emph{limit} of analyzed feature  pairs was set before carrying out main experiments.
+
+The initial intuition guiding \textsc{pfme} algorithm formulation was that there is a high, but slowly decreasing, correlation between \emph{grain} and classification accuracy, therefore during the development of algorithm \emph{grain} was fixed at value $100$. The true relation between this parameters, according to four example datasets is presented on Figure \ref{fig:grain}.
+
+\begin{figure*}[!ht]
+  \includegraphics[width=0.32\textwidth]{figures/grain_balance}
+  \includegraphics[width=0.32\textwidth]{figures/grain_breastcan}
+  \includegraphics[width=0.32\textwidth]{figures/grain_soybean}
+  
+  \caption{Accuracy of classification with tuned radius, according to different values of grain.}
+	\label{fig:grain}
+\end{figure*}
+
+Surprisingly, at most datasets (similar to \emph{Breastcan}) algorithm gains its maximum performance with a \emph{grain} around $10$. However, for some datasets (i.e. \emph{Soybean}) proper classification is possible only after reaching a little bit higher value of this parameter ($25$--$30$). In the last distinguished group of datasets (i.e. \emph{Monkone}), after increasing parameter over some, relatively small value (around $35$) even an accuracy regression can be observed. Chosen value, which seems to be a reasonable compromise, good for all cases, was a \emph{grain} of $30$. 
+
+Setting a \emph{limit}  on the number of feature pairs  to $30$ would create a model with maximal size of $105$ \emph{kilobytes} per class ($210$ \textsc{kb} for a binary problem, $1.64$ \textsc{mb} for \emph{Salinas} dataset). However, the maximal size would be reached only if there are more than 8 features in the analyzed problem. If the amount of features is up to 8, there would be still used all of possible pairs to construct a model. For comparison, we used different popular classifiers: \textsc{svm(rbf)} and k-\textsc{nn}.
+
+\begin{figure*}[!ht]
+  \includegraphics[width=0.32\textwidth]{figures/plot_balance_g30_l30}
+  \includegraphics[width=0.32\textwidth]{figures/plot_breastcan_g30_l30}
+  \includegraphics[width=0.32\textwidth]{figures/plot_soybean_g30_l30}
+  
+  \caption{Different profiles of relation between radius parameter and classification measures.}
+	\label{fig:profiles}
+\end{figure*}
+
+\subsection{Rezultaty}
+
+\begin{table*}[!ht]
     \sisetup{round-mode=places}
     \sisetup{
     	round-precision = 3,
@@ -320,9 +342,9 @@ Wynikowy model klasyfikacji (Rysunek \ref{fig:model}) jest konstrukcją trójpo
     \parbox{.45\linewidth}{
 	    \begin{ride}{products/balance.csv}{Balance}\end{ride}
 	}
-\end{table}
+\end{table*}
 
-\begin{table}[!ht]
+\begin{table*}[!ht]
     \sisetup{round-mode=places}
     \sisetup{
     	round-precision = 3,
@@ -335,10 +357,10 @@ Wynikowy model klasyfikacji (Rysunek \ref{fig:model}) jest konstrukcją trójpo
     \parbox{.45\linewidth}{
 	    \begin{ride}{products/diabetes.csv}{Diabetes}\end{ride}
 	}
-\end{table}
+\end{table*}
 
 
-\begin{table}[!ht]
+\begin{table*}[!ht]
     \sisetup{round-mode=places}
     \sisetup{
     	round-precision = 3,
@@ -351,9 +373,9 @@ Wynikowy model klasyfikacji (Rysunek \ref{fig:model}) jest konstrukcją trójpo
     \parbox{.45\linewidth}{
 	    \begin{ride}{products/hayes.csv}{Hayes}\end{ride}
 	}
-\end{table}
+\end{table*}
 
-\begin{table}[!ht]
+\begin{table*}[!ht]
     \sisetup{round-mode=places}
     \sisetup{
     	round-precision = 3,
@@ -366,9 +388,9 @@ Wynikowy model klasyfikacji (Rysunek \ref{fig:model}) jest konstrukcją trójpo
     \parbox{.45\linewidth}{
 	    \begin{ride}{products/ionosphere.csv}{Ionosphere}\end{ride}
 	}
-\end{table}
+\end{table*}
 
-\begin{table}[!ht]
+\begin{table*}[!ht]
     \sisetup{round-mode=places}
     \sisetup{
     	round-precision = 3,
@@ -381,11 +403,11 @@ Wynikowy model klasyfikacji (Rysunek \ref{fig:model}) jest konstrukcją trójpo
     \parbox{.45\linewidth}{
 	    \begin{ride}{products/soybean.csv}{Soybean}\end{ride}
 	}
-\end{table}
+\end{table*}
 
 
 
-\begin{table}[!ht]
+\begin{table*}[!ht]
 	\sisetup{round-mode=places}
     \sisetup{
 		round-precision = 3,
@@ -440,9 +462,15 @@ Wynikowy model klasyfikacji (Rysunek \ref{fig:model}) jest konstrukcją trójpo
 		\end{axis}
 		\end{tikzpicture}
     }
-\end{table}
+\end{table*}
 
+\section{Wnioski}
 
+In this paper, we present a novel classifier, formulated as an ensemble of multi-spectral images generated from paired features of data. Each image corresponds to a feature pair subspace, and each spectral layer to a class.  This approach has very interesting properties, such as robustness to the curse of dimensionality and naive parallelism, which allows big data processing naturally.  
+
+We showed, that this approach leads to create classifier that are competitive to existing ones and able to outperform them for some kind of data. We showed that it could be used for real-life applications.
+
+For future works we plan to develop an heuristic method of feature combination limitation, to improve performance of \textsc{pfme} classifier and to adapt the proposed model to deal with the fast changing streaming data \cite{Wozniak2011}. Additional work maybe directed to the formal analysis of this feature extraction metaphor in the framework of joint distribution approximation by products of variable subset joint distributions. 
 
 \bibliographystyle{unsrt}
 \bibliography{biblography}

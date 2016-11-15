@@ -58,13 +58,13 @@ During the research on \textsc{ece} algorithm the development environment change
 \subsection{\emph{Exposer}}
 \label{exposer}
 
-A \emph{histogram} is a \emph{graphical representation of the distribution of numerical data}. It is an estimate of the probability distribution of a continuous variable (quantitative variable) and was first introduced by Karl Pearson \cite{1895RSPTA.186..343P}. 
+\emph{Histogram} definiujemy jako \emph{graficzną reprezentację rozkładu danych numerycznych}. Jest estymacją rozkładu prawdopodobieństwa zmiennej ciągłej, po raz pierwszy wprowadzoną przez Karla Pearsona \cite{1895RSPTA.186..343P}. 
 
-Construction of a histogram consist of the division\footnote{Unfortunately not the Joy Division.} of the range of values into a series of intervals, called bins and counting how many elements will fall in each of them. The bins \emph{must be adjacent} and usually are equal-sized.
+Konstrukcja histogramu polega na podziale zakresu wartości na serię interwałów, nazywanych kubełkami i sukcesywnym zliczaniu ile wartości wpadnie do każdego z nich. Kubełki \emph{muszą być rozłączne} i z reguły są tej samej wielkości.
 
-A \emph{scatter plot} is a class of plot used to show distribution of two features for a set of data. The data is displayed as a cloud of points, representing objects from dataset, each corresponding with the value of chosen feature determining the position on the axes.\cite{jessica2005seeing} Example \emph{scatter plots} for \emph{iris} dataset are presented in Figure \ref{fig:scatterplots}.
+\emph{Scatter plot} jest rodzajem wykresu prezentującego dystrybucję dwóch cech zadanego zbioru danych. Rozkład prezentowany jest jako chmura punktów reprezentujących obiekty zbioru, z których pozycja każdego jest determinowana wartościami cech wybranych do wykresu\cite{jessica2005seeing}. Przykładowy \emph{scatter plot} dla zbioru benchmarkowego \emph{iris} można zobaczyć na Rysunku \ref{fig:scatterplots}.
 
-A proposed data structure of \emph{exposer} is drawing from both \emph{histogram} and \emph{scatter plot}. Like in \emph{histogram}, the range of values is divided into a series of intervals, but like in a \emph{scatter plot} the combination of features is analyzed. The rule of bin adjacency is here broken, so object may fall into more than one of them. Example \emph{exposers}, generated for the same variables as the illustrated \emph{scatter plots} are presented in Figure \ref{fig:exp1}.
+Opisywana w niniejszym raporcie struktura \emph{ekspozera} czerpie zarówno z \emph{histogramu} jak i ze \emph{scatter plota}. Jak w \emph{histogramie}, zakres wartości jest dzielony na serię interwałów, ale, jak w przypadku \emph{scatter plotów}, analizowana jest nie jedna cecha, a ich para. Charakterystyczna dla histogramów reguła rozłączności jest tutaj złamana i pojedyncze obiekty mogą wpadać do więcej niż jednego kubełka. Przykładowe \emph{ekspozery}, wygenerowane dla tych samych danych, co scatter ploty w poprzedniej ilustracji, można zobaczyć na Rysunku \ref{fig:exp1}.
 
 \begin{figure}[hbt]
 	\centering
@@ -84,14 +84,21 @@ A proposed data structure of \emph{exposer} is drawing from both \emph{histogram
   	\label{fig:exp1}
 \end{figure}
 
-The construction of \emph{exposer} is inspired by the process of plate light exposure of chemical photography. Hence, its control parameters are plate grain (\emph{exposer} counterpart of \emph{histograms} bin) and a light dispersion factor (called later a \emph{radius}, as a relative width of a bin according to a range of values). Instead of exposing the photographic plate coated with light-sensitive chemicals to the light source, a numerical representation matrix is exposed to the beams projected from the data samples. Procedure \emph{takes a photography} of a pair of features of the data samples, where intensity of a \emph{light} in every point is a density aggregation of the data samples falling in its neighborhood. 
+Konstrukcja ekspozera inspirowana jest procesem naświetlania fotografii analogowej. Stąd, parametrami, które decydują o ich kształcie są:
 
-The main difference from classic photography is a redefinition of the concept of color. For \emph{exposers} it consists not of classical three \textsc{rgb} spectral channels \cite{svaetichin_spectral_1956}, but of one dimension per class of the dataset. Hence, the representation matrix has as many layers as classes. The representation matrix exposure process sensitizes each layer projecting only objects from the class corresponding to the layer. There may be assumed, that \emph{exposing} procedure generates some kind of multispectral imaging \cite{1703909} from the data. 
+\begin{itemize}
+	\item ziarno (\verb|grain|) --- będące odpowiednikiem liczby interwałów histogramu oraz
+	\item współczynnik rozproszenia światła (\verb|radius|) --- wyrażany procentowo promień oddziaływania obiektów. 
+\end{itemize}
 
-Algorithm \ref{alg:expose} presents pseudocode used to create \emph{exposer}.
+W miejsce ekspozycji kliszy fotograficznej na źródło światła, tutaj eksponujemy wielowymiarową macierz liczb na wiązkę obiektów znajdujących się w zbiorze naświetlającym. Procedura \emph{robi zdjęcie} określonemu podzbiorowi cech próbek w taki sposób, że intensywność \emph{światła} w każdym punkcie eksponowanej macierzy jest agregacją gęstości przynależności próbek do jej okolicy.
+
+Główną różnicą wobec klasycznej fotografii, jest tutaj redefinicja samego pojęcia koloru. Dla ekspozerów, nie składa się on z klasycznych trzech kanałów modelu \textsc{rgb}\cite{svaetichin_spectral_1956}, ale tworzymy osobny wymiar spektralny dla każdej klasy występującej w zbiorze. W taki sposób otrzymujemy w strukturze dodatkowy wymiar przestrzenny, o zakresie równym sile puli klas. Proces ekspozycji macierzy każdą tak otrzymaną warstwę \emph{obrazu} uczula jedynie na obiekty reprezentujące zgodną z nią klasę. Możemy więc założyć, że efekt takiej procedury da nam reprezentację zbliżoną do obrazowania wielowidmowego \cite{1703909}. 
+
+Algorytm \ref{alg:expose} prezentuje pseudokod procedury naświetlania macierzy ekspozera.
 
 \begin{algorithm}[ht]
-\caption{Expose alogorithm}
+\caption{Algorytm naświetlania macierzy ekspozera}
 \label{alg:expose}
 \begin{algorithmic}[1]
 \Procedure{expose}{objects,radius,grain,features}
@@ -117,7 +124,7 @@ Algorithm \ref{alg:expose} presents pseudocode used to create \emph{exposer}.
 \end{algorithmic}
 \end{algorithm}
 
-To create a formal description, there is a set $\mathcal{X}$ of $n$ samples, $d$ features each and a set $\mathcal{M}$ of $M$ labels.
+Aby stworzyć formalny opis algorytmu, załóżmy, że dysponujemy zbiorem $\mathcal{X}$, na który składa się $n$ próbek, po $d$ cech każda oraz $M$-elementowym zbiorem etykiet $\mathcal{M}$.
 
 \begin{equation}
 	\begin{array}[b]{llll}
@@ -128,7 +135,7 @@ To create a formal description, there is a set $\mathcal{X}$ of $n$ samples, $d$
 	\end{array}
 \end{equation}
 
-Zdanie o tym, ze mamy zbior kombinacji $C$ z $d$ po $k$ wartościami, ktorego kazdy element $\gamma$ ma $k$ roznych od siebie wartosci.
+Mamy również zbiór kombinacji $C$ z $d$ po $k$ wartościami, którego każdy element $\gamma$ ma $k$ różnych od siebie wartości.
 
 \begin{equation}
 	\begin{array}[b]{llll}
@@ -138,7 +145,7 @@ Zdanie o tym, ze mamy zbior kombinacji $C$ z $d$ po $k$ wartościami, ktorego ka
 	\end{array}
 \end{equation}
 
-A w szczegolnosci, uzywajac kombinacji dwuelementowych,
+A w szczególności, używając, jak np. w wypadku płaskich fotografii, kombinacji dwuelementowych,
 
 \begin{equation}
 	\begin{array}[b]{llll}
@@ -148,7 +155,7 @@ A w szczegolnosci, uzywajac kombinacji dwuelementowych,
 	\end{array}
 \end{equation}
 
-Representation of \emph{exposer} $E$ is an multispectral image of spatial dimensions $G\times G$ and a spectral dimension $M$, where $G$ is a \emph{grain} parameter and $M$ is a number of classes in dataset. Komentarz o dyskretyzacji.
+Reprezentacja ekspozera $E$ jest wielowidmowym obrazem o wymiarach przestrzennych $G\times G$ i wymiarze spektralnym $M$, gdzie $G$ wyznaczane jest przez parametr ziarna, a $M$ oznacza liczbę klas w zbiorze. Ziarno przy podziale zmiennej ciągłej (lub chociaż zmiennej o niższej precyzji niż wynikałoby to z samego ziarna) zapewni realizację procesu kwantyzacji, w wielu wymiarach jednocześnie.
 
 \begin{equation}
 	\begin{array}[b]{lll}
@@ -157,7 +164,7 @@ Representation of \emph{exposer} $E$ is an multispectral image of spatial dimens
 	\end{array}
 \end{equation}
 
-A w szczegolnosci,
+A w szczególności,
 
 \begin{equation}
 	\begin{array}[b]{lll}
@@ -166,7 +173,7 @@ A w szczegolnosci,
 	\end{array}
 \end{equation}
 
-Kazdy punkt wyznaczony przez $g_u$ i $g_v$ daje nam sygnature spektralna $pix$.
+Każdy punkt wyznaczony przez $g_u$ i $g_v$ skutkuje powstaniem sygnatury spektralnej $pix$.
 
 \begin{equation}
 	\begin{array}[b]{lll}
@@ -174,23 +181,23 @@ Kazdy punkt wyznaczony przez $g_u$ i $g_v$ daje nam sygnature spektralna $pix$.
 	\end{array}
 \end{equation}
 
-An entry of one layer of a \emph{exposer} ($pix_i$) is a sum of all positive differences between a given radius and a distance from a real vector of grid cell central point to the samples labeled accordingly to a layer. 
+Składowa pojedynczej warstwy \emph{ekspozera} (a więc monochromatyczny odpowiednik piksela w klasycznym obrazie) jest sumą wszystkich nieujemnych różnic pomiędzy zadanym promieniem oraz odległością dzielącą tzw. realny wektor centralnego punktu komórki (piksela) i wartości zadanych cech obiektów przynależących klasą do warstwy.
 
-\begin{equation}
-	\begin{array}[b]{lll}
-		cent(pix(g_u,g_v) &=& 
-	\end{array}
-\end{equation}
+%\begin{equation}
+%	\begin{array}[b]{lll}
+%		cent(pix(g_u,g_v) &=& 
+%	\end{array}
+%\end{equation}
 
-To w zasadzie jest kwantyzacja (dyskretyzacja), na g kwantow w kazdym wymiarze przestrzennym.
+% To w zasadzie jest kwantyzacja (dyskretyzacja), na g kwantow w kazdym wymiarze przestrzennym.
 
 \begin{equation}
 	pix_i(g_u,g_v) = \sum_{k=1}^{n}\Big[d\Big(cent([g_u,g_v]),x_k\Big) < r \;\;\wedge\;\; i_k = i\Big]\;\cdot\; \Big(r - d(cent([g_u,g_v]),x_k)\Big)
 \end{equation}
 
-According to the photographic metaphor, the previous expression may be imagined as a projection by exposure, where every $x_k$ sample is the \emph{photon} with location described with features chosen by combination $\gamma$, affecting the image in $r$ radius.
+Powracając do metafory fotograficznej, poprzedni wzór możemy wyobrazić sobie jako projekcję przez ekspozycję, gdzie każda próbka $x_k$ jest fotonem o lokalizacji opisanej przez cechy wybrane w kombinacji $\gamma$, oddziałującym na obraz w promieniu $r$.
 
-Taki ekspozer pozwalalby na poprawna kolorowa wizualizacje jedynie przy trzech klasach. Aby byl uniwersalny, potrzebujemy interpretacje HSV punktu \emph{ekspozera}.
+Taki ekspozer pozwalałby na poprawną kolorową wizualizację jedynie, gdy siła zbioru klas wynosi 3. Aby stał się uniwersalny, potrzebna jest jeszcze interpretacja \textsc{hsv} punktu \emph{ekspozera}.
 
 \begin{equation}
 	HSV(pix) = \Big[\tfrac{argmax(pix) \times 360^\circ}{M},\;max(pix) - min(pix),\;max(pix)\Big] 
@@ -200,7 +207,7 @@ Taki ekspozer pozwalalby na poprawna kolorowa wizualizacje jedynie przy trzech k
 \subsection{\emph{Exposer} Classifier}
 \label{exposerclassifier}
 
-Using the \emph{exposers} as a classification tool is quite easy process. There is an \emph{exposer}, exposed on a \emph{learning set} and a testing sample $x_k$ from a \emph{testing set} to classify.
+Wykorzystanie ekspozerów jako narzędzia klasyfikacji jest relatywnie prostym zadaniem. Załóżmy, że dysponujemy ekspozerem, naświetlonym już na zbiorze uczącym oraz próbkę $x_k$ ze zbioru testowego.
 
 \begin{equation}
 	\begin{array}[b]{l}
@@ -208,52 +215,22 @@ Using the \emph{exposers} as a classification tool is quite easy process. There 
 	\end{array}
 \end{equation}
 
-Lokalizacja piksela z probki.
+Wyliczamy lokalizację, na którą najmocniej oddziaływałaby próbka, gdyby znajdowała się ona w zbiorze uczącym.
 
 \begin{equation}
 	fin(x) = [g_u,g_v]
 \end{equation}
 
-The prediction ($\Psi$) is the class index with the maximum value from a spectral signature $pix$ corresponding to the testing sample.
+Predykcja ($\Psi$) jest indeksem klasy o największej wartości w sygnaturze komórki macierzy korespondującej z próbką testową.
 
 \begin{equation}
 	\Psi(x_k) = \mathop{argmax}\limits_{i \in \mathcal{M}}\Bigg(pix_i\Big(fin(x_k)\Big)\Bigg)
 \end{equation}
 
-\begin{comment}
-
-A predykcja w tym modelu ($\Psi_\textrm{\textsc{b}}$) zalezy od iloczynu wektora sygnatury z wektorem miary pewnosci.
-
-\begin{equation}
-	\Psi_\textrm{\textsc{b}}(x_k) = \textsc{argmax}\Bigg(\theta\cdot pix\Big(fin(x_k)\Big)\Bigg)
-\end{equation}
-
-	
-Simple Figure \ref{fig:exp1} overwiew shows, that the classes are most discriminative with pair of features 3 and 4. How effective will be the classification of \emph{exposer} builded around them, according to a radius parameter? Intuitively a higher radius should give us an increase of accuracy.
-
-\input{experiments/experiment_1}
-
-According to the results of Experiment 1, \emph{exposer} is a structure, which is able to be used to classify data. Hence the intuition was confirmed, it can be observed that a maximum performance of classification is achieved here quite early, with a local maximum of \verb|.18| radius. How will be the influence of \emph{grain} values onto the classification performance? Experiment 2 will try the same approach, with radius $.18$, testing grain, which intuitively should also give an increase of accuracy with highest values.
-  	
-\input{experiments/experiment_2}
-
-The similar effect of very good performance on low values of parameter was here observed. Surprisingly, the peak with the highest value of accuracy is observed here at grain set on only 15, which gave us a good performing classifier with only 225 points of data, exposed with influence of 18\%.
-
-Figure \ref{fig:little_exposer} shows the scale of \emph{exposer}, which gave the best results for \emph{iris} dataset. $289$ Bytes of data was enough to achieve 98\% accuracy of classification.
-
-\begin{figure}[hbt]
-	\centering
-	\includegraphics[scale=1]{Figures/little_exposer}
-  	\caption{Most effective \emph{exposer} on \emph{iris} dataset according to Experiments 1 and 2.}
-  	\label{fig:little_exposer}
-\end{figure}
-
-\end{comment}
-
 \subsection{\emph{Exposer} Classifier Ensemble}
 \label{exposerclassifierensemble}
 
-To establish an ensemble, a prediction procedure needs a little enhancement. There is a testing sample $x_k$ to classify.
+Aby ustanowić komitet ekspozerów, procedura predykcji potrzebuje lekkiego rozwinięcia. Załóżmy, że dysponujemy próbką $x_k$, którą chcemy sklasyfikować.
 
 \begin{equation}
 	\begin{array}[b]{cll}
@@ -261,7 +238,7 @@ To establish an ensemble, a prediction procedure needs a little enhancement. The
 	\end{array}
 \end{equation}
 
-Mamy zbior \emph{ekspozerow} ($\mathcal{E}$) zbudowany na wszystkich $\gamma$ z $\Gamma$ w zbiorze uczacym oraz element zbioru testowego.
+Dysponujemy również zbiorem \emph{ekspozerow} ($\mathcal{E}$) zbudowanym na wszystkich $\gamma$ z $\Gamma$ możliwych do zbudowania w zbiorze uczącym.
 
 \begin{equation}
 	\begin{array}[b]{cll}
@@ -271,33 +248,31 @@ Mamy zbior \emph{ekspozerow} ($\mathcal{E}$) zbudowany na wszystkich $\gamma$ z 
 	\end{array}
 \end{equation}
 
-Bardziej zlozony model wprowadza jednak miare pewnosci decyzji wobec kazdej z klas. Waga dla i-tej klasy to srednia saturacja ($S$) dla punktow odpowiadajacych odcieniowi klasy ($H$, $max_i(e)$) dla wartosci ($V$) większych niż zadana wielkosc graniczna. 
+Bardziej złożony model wprowadza jednak miarę pewności decyzji wobec każdej z klas. Waga dla i-tej klasy to średnia saturacja ($S$) dla punktów odpowiadających odcieniowi klasy ($H$, $max_i(e)$) dla wartosci ($V$) większych niż zadana wielkość graniczna. 
 
 \begin{equation}
 	\theta _i = \frac{\sum_{g_u=1}^{G}\sum_{g_v=1}^{G}\Big[ argmax(pix) = i \;\wedge\; pix_i > threshold\Big]\;S(pix)}{\sum_{g_u=1}^{G}\sum_{g_v=1}^{G} \Big[ argmax(pix) = i\Big]} 
 \end{equation}
 
-\paragraph{Voting methods}
+\begin{comment}
+\paragraph{Metody głosowania}
+
+W obrębie komitetów ekspozerów wprowadzone zostało pięć propozycji głosowania.
 
 \begin{itemize}
-		\item No confidence measure
-%Teraz z każdego \emph{ekspozera} ze zbioru wyliczamy wektor wsparć. Wektor wsparcia ECE to suma tych wektorów.
+		\item \textbf{Brak miary} --- każdy ekspozer ma taki sam wpływ na decyzję komitetu.
 
 \begin{equation}
-	\Pi_\textrm{\textsc{a}}(x_k) = \mathop{argmax}\limits_{i \in \mathcal{M}}\Bigg(\sum_{l = 1}^N pix^{(l)}\Big(fin(x_k)\Big)\Bigg)
+	\Pi_\textrm{\textsc{a}}(x_k) = \mathop{argmax}\limits_{i \in \mathcal{M}}\Bigg(\sum_{l = 1}^N pix^{(l)}\Big(\Psi_l(x_k)\Big)\Bigg)
 \end{equation}
 
-	\item Single confidence measure per class
-%Teraz z każdego \emph{ekspozera} ze zbioru wyliczamy wektor wsparć. Wektor wsparcia ECE to suma tych wektorów.
+	\item \textbf{Pojedyncza miara pewności dla klasy} --- dla każdego \emph{ekspozera} w komitecie wyliczamy uśredniony wektor wsparć dla każdej z klas. Wektor wsparcia komitetu to suma tych wektorów.
 
 \begin{equation}
 	\Pi_\textrm{\textsc{b}}(x_k) = \mathop{argmax}\limits_{i \in \mathcal{M}}\Bigg(\sum_{l = 1}^N\theta^{(l)}\cdot pix^{(l)}\Big(fin(x_k)\Big)\Bigg)
 \end{equation}
 
-	\item Single confidence measure per exposer
-%The linear combination of the  $\beta_i$ with $\theta_i$ weights our voting vector ($V$).
-
-%Prediction is a class index with the maximum voting value ($\Delta$).
+	\item \textbf{Pojedyncza miara pewności dla ekspozera} --- The linear combination of the  $\beta_i$ with $\theta_i$ weights our voting vector ($V$).
 
 \begin{equation}
 	\Pi_\textrm{\textsc{c}}(x_k) = \mathop{argmax}\limits_{i \in \mathcal{M}}\Bigg(\sum_{l = 1}^N mean(\theta^{(l)})\cdot pix^{(l)}\Big(fin(x_k)\Big)\Bigg)
@@ -316,16 +291,17 @@ Bardziej zlozony model wprowadza jednak miare pewnosci decyzji wobec kazdej z kl
 \end{equation}
 
 \end{itemize}
+\end{comment}
 
-\paragraph{Classification model}
+\paragraph{Model klasyfikacji}
 
-The classification model (Figure \ref{fig:model}) is a three-level construction. At the lowest level there is a set of monochrome layers, each of which defines a member classifier, characterized by a combination of features, denoted by $\gamma_i$, and a weight $\theta_i \in \Re^2$ used to combine its output with the remaining classifiers into \emph{exposer}. At the top level, member classifiers are combined into an \textsc{eec} ensemble.
+Wynikowy model klasyfikacji (Rysunek \ref{fig:model}) jest konstrukcją trójpoziomową. Na najniższym znajdują się monochromatyczne warstwy, które budują klasyfikatory składowe drugiego poziomu, określone kombinacją cech $\gamma_i$ oraz wagą $\theta_i$ używaną w metodach głosowania w obrębie komitetu. W najwyższej warstwie, klasyfikatory składowe łączone są w komitet \textsc{ece}.
 
 \begin{figure*}[hbt]
 	\center
   \includegraphics[width=\textwidth]{figures/ece_model}
   
-  \caption{\textsc{ece} classification model diagram.}
+  \caption{Model klasyfikacji \textsc{ece}}
 	\label{fig:model}
 \end{figure*}
 
@@ -423,6 +399,8 @@ The classification model (Figure \ref{fig:model}) is a three-level construction.
 			\toprule
 			{zbiór danych} & {promień} & {accuracy} \\\midrule		    \csvreader[head to column names]{products/acc.csv}{}%
 		    {\emph{\filename} & \radius & \accuracy\\}%
+		    \bfseries średni promień & 0.098\\
+		    \bottomrule
 		\end{tabular}
 	}
 	\hfill
@@ -434,6 +412,8 @@ The classification model (Figure \ref{fig:model}) is a three-level construction.
 			\toprule
 			{zbiór danych} & {promień} & {\textsc{bac}} \\\midrule		    \csvreader[head to column names]{products/bac.csv}{}%
 		    {\emph{\filename} & \radius & \bac\\}%
+		    \bfseries średni promień & 0.122\\
+		    \bottomrule
 		\end{tabular}
 	}
 	
@@ -444,21 +424,19 @@ The classification model (Figure \ref{fig:model}) is a three-level construction.
 			    width = 1.04\linewidth,
 			    bar width=0.2cm,
 			    height = 6cm,
-			    legend style={at={(0.5,-0.15)},
-			      anchor=north,legend columns=-1},
 			    symbolic x coords={australian, balance, breastcan, diabetes, german, hayes, heart, ionosphere, iris, soybean},			    
 			    xtick=data,
 			    grid=both,
 			    grid style={line width=.1pt, draw=gray!10},
 			    major grid style={line width=.2pt,draw=gray!50},
-			    ymin=.55, ymax=1,
+			    ymin=.45, ymax=1,
 			    ytick = {.5, .6, .7, .8, .9, 1},
 			    yticklabels = { 50\%, 60\%, 70\%, 80\%, 90\%, 100\%},
-				ticklabel style={font=\tiny,fill=white}		
+				ticklabel style={font=\tiny,fill=white},				
+			    x tick label style={rotate=30,anchor=east},	
 		    ]
 			\addplot[black, fill=white, postaction={pattern=north east lines}] table[x=filename, y=accuracy, col sep=comma] {products/acc.csv};
 			\addplot[red, fill=white, pattern color = red, postaction={pattern=north east lines}] table[x=filename, y=bac, col sep=comma] {products/bac.csv};
-			\legend{Accuracy, Balanced accuracy}
 		\end{axis}
 		\end{tikzpicture}
     }

@@ -11,6 +11,7 @@
 \usepackage{csvsimple}
 \usepackage{pgfplots}
 \usetikzlibrary{patterns}
+\usepackage{placeins}
 
 \title{Raport 4 z ECE}
 \author{Paweł Ksieniewicz}
@@ -88,7 +89,7 @@ Konstrukcja ekspozera inspirowana jest procesem naświetlania fotografii analog
 
 \begin{itemize}
 	\item ziarno (\verb|grain|) --- będące odpowiednikiem liczby interwałów histogramu oraz
-	\item współczynnik rozproszenia światła (\verb|radius|) --- wyrażany procentowo promień oddziaływania obiektów. 
+	\item współczynnik rozproszenia światła, nazywany dalej promieniem (\verb|radius|) --- wyrażany procentowo promień oddziaływania obiektów. 
 \end{itemize}
 
 W miejsce ekspozycji kliszy fotograficznej na źródło światła, tutaj eksponujemy wielowymiarową macierz liczb na wiązkę obiektów znajdujących się w zbiorze naświetlającym. Procedura \emph{robi zdjęcie} określonemu podzbiorowi cech próbek w taki sposób, że intensywność \emph{światła} w każdym punkcie eksponowanej macierzy jest agregacją gęstości przynależności próbek do jej okolicy.
@@ -266,70 +267,57 @@ Wynikowy model klasyfikacji (Rysunek \ref{fig:model}) jest konstrukcją trójpo
 	\label{fig:model}
 \end{figure*}
 
-\section{Ewaluacja metody}
+\section{Ewaluacja eksperymentalna metody}
 
-\subsection{Datasets}
+\subsection{Zbiory danych}
 
-For the evaluation of algorithm capabilities, we have used twenty five benchmark datasets. 
-Most of them are coming from \textsc{ucimlr}\cite{asuncion2007uci}, which was chosen to provide diverse problems to solve. Selection was made according to the following guidelines: 
+Aby zweryfikować skuteczność algorytmu, użyte zostało dziesięć baz benchmarkowych. Większość z nich pochodzi z bazy \textsc{ucimlr}\cite{asuncion2007uci} i zostały one wybrane tak, aby stworzyć możliwie różnorodną pulę problemów do rozwiązania. Selekcja została dokonana na bazie następujących wytycznych:
 
 \begin{itemize}
-	\item Datasets should include both binary (\emph{15 datasets}) and multi-label problems (\emph{10 datasets, from 3, up to 16 classes}).
-	\item Datasets should include as well imbalanced (\emph{i.e. Yeast3}) as balanced data (\emph{Wine}).
-	\item Datasets should vary from low- to high-dimensionality (\emph{from 4 to 60 features}).
-	\item Datasets should be as well sparse (\emph{43 samples for Soybean}) and dense (\emph{10000 samples for Salinas}).
-	\item Datasets should include both continuous (\emph{Iris}), discrete (\emph{Balance}) and descriptive features (\emph{Spambase}).
+	\item Zbiory powinny zawierać tak binarne (\emph{6 baz}) jak i wieloklasowe (\emph{4 bazy, po 3 i 4 klasy}) problemy do rozwiązania.
+	\item Zbiory powinny być zarówno nisko, jak i wysokowymiarowe (\emph{od 4 do 35 cech}).
+	\item Powinny być uwzględniane zarówno zbiory rzadkie (\emph{43 próbki dla bazy Soybean}) jak gęste (\emph{1000 próbek dla German}).
+	\item Cechy analizowanych zbiorów powinny być tak ciągłe (\emph{Iris}) jak i dyskretne (\emph{Balance}).
 \end{itemize}
 
-A short overview of every chosen dataset is presented in Table \ref{tab:datasets_overview}.
+Krótki przegląd wszystkich wybranych zbiorów zawiera się w Tabeli \ref{tab:datasets_overview}.
 
 \begin{table*}[!ht]
-	\caption{Datasets overwiew.}
+	\caption{Przegląd zbiorów danych}
 	\label{tab:datasets_overview}
 	\centering
 	\csvreader[tabular=lccc,
-        table head=\toprule Dataset & Features & Samples & Classes \\\midrule,
+        table head=\toprule zbiór danych & l. cech & l. próbek & l. klas \\\midrule,
         late after line = \\,
         late after last line = \\\bottomrule]%
     {products/comparison.csv }{dataset=\dataset,attributes=\attributes,samples=\samples,classes=\classes}%
     {\emph{\dataset} & \attributes & \samples & \classes}%
 \end{table*}
 
-\emph{Salinas} and \emph{SalinasA},  are hyper spectral images of an agricultural land, collected  by the \textsc{aviris} sensor at \textsc{nasa}s \emph{Jet Propulsion Laboratory}. \emph{SkinA} is an hyperspectral image used to test skin detection in bad light conditions. Spectral bands in these datasets was reduced from more than two hundred to eleven features, using the trick of artificial photoreceptors \cite{Krawczyk2014}.
-
-Eight databases (\emph{Liver, Diabetes, Heart, Australian, German, Breastcan, Ionosphere} and \emph{Sonar}) were selected to compare \textsc{pfme} with some published representation learning methods \cite{Czarnecki2015MaximumRepresentation}. \emph{Yeast3} is an imbalanced database, used during algorithm formulation and development  to assure its good performance on this kind of data.
-
 \subsection{Środowisko eksperymentalne}
 
-The experimental framework was constructed in \textsc{matlab} environment. Full code of all experiments, with all datasets is available on the Github repository ({\url{https://github.com/w4k2/pfme}). Due to the big number of testing datasets, the parameters  \emph{grain} and \emph{limit} of analyzed feature  pairs was set before carrying out main experiments.
+Eksperyment badawczy powstał w oparciu o \emph{framework} uczenia maszynowego \textsc{ksskml}\footnote{\url{https://github.com/w4k2/KSSKML}} i został zaimplementowany jako jego rozszerzenie, udostępnione w repozytorium paczek \verb|pip| jako moduł \textsc{ece}\footnote{\url{https://github.com/w4k2/ece}}, aktualnie w wersji \oldstylenums0.\oldstylenums6.\oldstylenums3. Kod odpowiedzialny za przeprowadzenie poniższych eksperymentów, podsumowanie ich oraz tekst poniższego raportu zostały umieszczone w repozytorium w serwisie Github\footnote{\url{https://github.com/xehivs/eceReport}}.
 
-The initial intuition guiding \textsc{pfme} algorithm formulation was that there is a high, but slowly decreasing, correlation between \emph{grain} and classification accuracy, therefore during the development of algorithm \emph{grain} was fixed at value $100$. The true relation between this parameters, according to four example datasets is presented on Figure \ref{fig:grain}.
+Początkowa intuicja dotycząca algorytmu \textsc{ece} podpowiada, że istniej wysoka, ale tracąca wpływ powoli wraz ze wzrostem parametru, korelacja pomiędzy wartością \emph{ziarna} i efektywnością klasyfikacji, w związku z czym w jego testach jednostkowych była ona pierwotnie ustalona na \oldstylenums{100}. Ich rzeczywista relacja została przedstawiona na przebiegach trzech zbiorów uczących i można zaobserwować ją na Rysunku \ref{fig:grain}.
 
 \begin{figure*}[!ht]
   \includegraphics[width=0.32\textwidth]{figures/grain_balance}
   \includegraphics[width=0.32\textwidth]{figures/grain_breastcan}
   \includegraphics[width=0.32\textwidth]{figures/grain_soybean}
   
-  \caption{Accuracy of classification with tuned radius, according to different values of grain.}
+  \caption{Efektywność klasyfikacji dla stałego \emph{promienia} i zmiennego \emph{ziarna}}
 	\label{fig:grain}
 \end{figure*}
 
-Surprisingly, at most datasets (similar to \emph{Breastcan}) algorithm gains its maximum performance with a \emph{grain} around $10$. However, for some datasets (i.e. \emph{Soybean}) proper classification is possible only after reaching a little bit higher value of this parameter ($25$--$30$). In the last distinguished group of datasets (i.e. \emph{Monkone}), after increasing parameter over some, relatively small value (around $35$) even an accuracy regression can be observed. Chosen value, which seems to be a reasonable compromise, good for all cases, was a \emph{grain} of $30$. 
+Zaskakująco, dla większości zbiorów (podobnie jak w przypadku \emph{Breastcan}) algorytm osiąga swoją maksymalną zdolność dyskryminacji dla \emph{ziarna} w okolicach \oldstylenums{10}. Jakkolwiek, dla części zbiorów (np. \emph{Soybean}), należyta klasyfikacja jest możliwa dopiero po osiągnięciu nieco większej wartości tego parametru (\oldstylenums{25}--\oldstylenums{30}). Wreszcie, w niektórych przypadkach (\emph{Balance}), po początkowym wczesnym wzroście efektywności następuje regresja i dopiero późniejsza stabilizacja efekywności. Wybraną wartością, która wydaje się dostatecznym kompromisem, było ziarno ustalone na \oldstylenums{15}. 
 
-Setting a \emph{limit}  on the number of feature pairs  to $30$ would create a model with maximal size of $105$ \emph{kilobytes} per class ($210$ \textsc{kb} for a binary problem, $1.64$ \textsc{mb} for \emph{Salinas} dataset). However, the maximal size would be reached only if there are more than 8 features in the analyzed problem. If the amount of features is up to 8, there would be still used all of possible pairs to construct a model. For comparison, we used different popular classifiers: \textsc{svm(rbf)} and k-\textsc{nn}.
-
-\begin{figure*}[!ht]
-  \includegraphics[width=0.32\textwidth]{figures/plot_balance_g30_l30}
-  \includegraphics[width=0.32\textwidth]{figures/plot_breastcan_g30_l30}
-  \includegraphics[width=0.32\textwidth]{figures/plot_soybean_g30_l30}
-  
-  \caption{Different profiles of relation between radius parameter and classification measures.}
-	\label{fig:profiles}
-\end{figure*}
+Ustalenie wartości \emph{limitu} również na \oldstylenums{15} skutkuje stworzeniem modelu o wielkości maksimum \oldstylenums{52}.\oldstylenums{5} \emph{kilobajta} na klasę (\oldstylenums{105} \emph{kilobajtów} dla problemu binarnego, \oldstylenums{210} dla dwuklasowego). Jakkolwiek, maksymalna wielkość jest osiągana jedynie, jeśli w analizowanym problemie występuje co najmniej sześć cech. W mniejszych i równych problemach, algorytm dokonuje przeglądu zupełnego wśród wszystkich możliwych kombinacji.
 
 \subsection{Rezultaty}
 
-\begin{table*}[!ht]
+Tabele 2--11 przedstawiają wyniki osiągnięte przez algorytm dla \emph{ziarna} \oldstylenums{15} i parametrów \emph{promienia} z przedziału \oldstylenums{1}--\oldstylenums{30}. Testy zostały przeprowadzone z wykorzystaniem walidacji krzyżowej \oldstylenums5v\oldstylenums2.
+
+\begin{table*}[htb]
     \sisetup{round-mode=places}
     \sisetup{
     	round-precision = 3,
@@ -405,7 +393,9 @@ Setting a \emph{limit}  on the number of feature pairs  to $30$ would create a m
 	}
 \end{table*}
 
+\FloatBarrier
 
+Tabele \ref{tab:accuracy} oraz \ref{tab:bac} przedstawiają najlepsze osiągi dla każdej bazy testowej, względem \emph{accuracy} i \emph{balanced accuracy}, dla problemów wieloklasowych wyliczonego jako średnia z testów \emph{jeden kontra wszyscy}. 
 
 \begin{table*}[!ht]
 	\sisetup{round-mode=places}
@@ -414,8 +404,8 @@ Setting a \emph{limit}  on the number of feature pairs  to $30$ would create a m
 		round-integer-to-decimal
 	}
     \parbox{.45\linewidth}{   
-		\caption{Najlepsze accuracy}
-	    \label{tab:results}
+		\caption{Najlepszy \emph{promień} względem accuracy}
+	    \label{tab:accuracy}
 		\centering
 		\begin{tabular}{lSS}
 			\toprule
@@ -427,8 +417,8 @@ Setting a \emph{limit}  on the number of feature pairs  to $30$ would create a m
 	}
 	\hfill
 	\parbox{.45\linewidth}{
-		\caption{Najlepsze bac}
-	    \label{tab:results}
+		\caption{Najlepszy \emph{promień} względem \textsc{bac}}
+	    \label{tab:bac}
 		\centering
 		\begin{tabular}{lS>{\color{red}}S}
 			\toprule
@@ -463,6 +453,8 @@ Setting a \emph{limit}  on the number of feature pairs  to $30$ would create a m
 		\end{tikzpicture}
     }
 \end{table*}
+
+\FloatBarrier
 
 \section{Wnioski}
 

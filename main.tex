@@ -86,7 +86,7 @@
 
 \maketitle
 \newpage
-
+\begin{comment}
 \section{ECE --- \emph{Exposer Classifier Ensemble}}
 
 Ostatnimi czasy nurt \emph{representation learning} staje się coraz bardziej witalnym tematem badań dla środowiska uczenia maszynowego. Leżąca u jego podstaw idea twierdzi, że kluczem do skutecznej klasyfikacji trudnych zbiorów danych, jest odpowiednia ekstrakcja cech. Transformacja przestrzeni danych dostępnych w zbiorze do innej przestrzeni, w której samo zadanie się trywializuje. 
@@ -307,6 +307,7 @@ Wynikowy model klasyfikacji (Rysunek \ref{fig:model}) jest konstrukcją trójpo
   \caption{Model klasyfikacji \textsc{ece}}
 	\label{fig:model}
 \end{figure*}
+\end{comment}
 
 \section{Ewaluacja eksperymentalna metody}
 
@@ -436,6 +437,59 @@ Tabele 2--11 przedstawiają wyniki osiągnięte przez algorytm dla \emph{ziarna}
 	}
 \end{table*}
 
+\begin{table*}[!ht]
+	\sisetup{round-mode=places}
+    \sisetup{
+		round-precision = 3,
+		round-integer-to-decimal
+	}
+    \parbox{.45\linewidth}{   
+		\caption{Najlepszy \emph{promień} względem accuracy}
+	    \label{tab:accuracy}
+		\centering
+		\begin{tabular}{lSS}
+			\toprule
+			{zbiór danych} & {promień} & {accuracy} \\\midrule		    \csvreader[head to column names]{products/acc.csv}{}%
+		    {\emph{\filename} & \radiusr & \accuracyr\\}
+		\end{tabular}
+	}
+	\hfill
+	\parbox{.45\linewidth}{
+		\caption{Najlepszy \emph{promień} względem \textsc{bac}}
+	    \label{tab:bac}
+		\centering
+		\begin{tabular}{lS>{\color{red}}S}
+			\toprule
+			{zbiór danych} & {promień} & {\textsc{bac}} \\\midrule		    \csvreader[head to column names]{products/bac.csv}{}%
+		    {\emph{\filename} & \radiusr & \bacr\\}
+		\end{tabular}
+	}
+	
+    \parbox{\linewidth}{
+    	\begin{tikzpicture}
+		\begin{axis}[
+			    ybar,
+			    width = 1.1\linewidth,
+			    bar width=0.2cm,
+			    height = 6cm,
+			    symbolic x coords={australian, balance, breastcan, diabetes, german, hayes, heart, ionosphere, iris, soybean},			    
+			    xtick=data,
+			    grid=both,
+			    grid style={line width=.1pt, draw=gray!10},
+			    major grid style={line width=.2pt,draw=gray!50},
+			    ymin=.45, ymax=1,
+			    ytick = {.5, .6, .7, .8, .9, 1},
+			    yticklabels = { 50\%, 60\%, 70\%, 80\%, 90\%, 100\%},
+				ticklabel style={font=\tiny,fill=white},				
+			    x tick label style={rotate=30,anchor=east},	
+		    ]
+			\addplot[black, fill=white, postaction={pattern=north east lines}] table[x=filename, y=accuracyr, col sep=comma] {products/acc.csv};
+			\addplot[red, fill=white, pattern color = red, postaction={pattern=north east lines}] table[x=filename, y=bacr, col sep=comma] {products/bac.csv};
+		\end{axis}
+		\end{tikzpicture}
+    }
+\end{table*}
+
 \FloatBarrier
 
 
@@ -521,8 +575,6 @@ Tabele 2--23 przedstawiają wyniki osiągnięte przez algorytm dla \emph{promien
 
 \FloatBarrier
 
-\subsection{Podsumowanie}
-
 Na podstawie zaprezentowanych przebiegów można zaobserwować, że w wybranym zakresie promienia, jeśli ziarno ustalimy na relatywnie niedużej wartości, zależność pomiędzy nim a efektywnością klasyfikacji jest znacznie słabsza niż w wypadku tej z testów wstępnych.
 
 Tabele \ref{tab:accuracy} oraz \ref{tab:bac} przedstawiają najlepsze osiągi dla każdej bazy testowej, względem \emph{accuracy} i \emph{balanced accuracy}, dla problemów wieloklasowych wyliczonego jako średnia z testów \emph{jeden kontra wszyscy}. 
@@ -532,27 +584,6 @@ Tabele \ref{tab:accuracy} oraz \ref{tab:bac} przedstawiają najlepsze osiągi dl
     \sisetup{
 		round-precision = 3,
 		round-integer-to-decimal
-	}
-    \parbox{.45\linewidth}{   
-		\caption{Najlepszy \emph{promień} względem accuracy}
-	    \label{tab:accuracy}
-		\centering
-		\begin{tabular}{lSS}
-			\toprule
-			{zbiór danych} & {promień} & {accuracy} \\\midrule		    \csvreader[head to column names]{products/acc.csv}{}%
-		    {\emph{\filename} & \radiusr & \accuracyr\\}
-		\end{tabular}
-	}
-	\hfill
-	\parbox{.45\linewidth}{
-		\caption{Najlepszy \emph{promień} względem \textsc{bac}}
-	    \label{tab:bac}
-		\centering
-		\begin{tabular}{lS>{\color{red}}S}
-			\toprule
-			{zbiór danych} & {promień} & {\textsc{bac}} \\\midrule		    \csvreader[head to column names]{products/bac.csv}{}%
-		    {\emph{\filename} & \radiusr & \bacr\\}
-		\end{tabular}
 	}
 	
 	 \parbox{.45\linewidth}{   
@@ -582,7 +613,7 @@ Tabele \ref{tab:accuracy} oraz \ref{tab:bac} przedstawiają najlepsze osiągi dl
 		\begin{axis}[
 			    ybar,
 			    width = 1.1\linewidth,
-			    bar width=0.15cm,
+			    bar width=0.2cm,
 			    height = 6cm,
 			    symbolic x coords={australian, balance, breastcan, diabetes, german, hayes, heart, ionosphere, iris, soybean},			    
 			    xtick=data,
@@ -595,10 +626,8 @@ Tabele \ref{tab:accuracy} oraz \ref{tab:bac} przedstawiają najlepsze osiągi dl
 				ticklabel style={font=\tiny,fill=white},				
 			    x tick label style={rotate=30,anchor=east},	
 		    ]
-			\addplot[black, fill=white, postaction={pattern=north east lines}] table[x=filename, y=accuracyr, col sep=comma] {products/acc.csv};
-			\addplot[red, fill=white, pattern color = red, postaction={pattern=north east lines}] table[x=filename, y=bacr, col sep=comma] {products/bac.csv};
-			\addplot[black, fill=white, postaction={pattern= sixpointed stars}] table[x=filename, y=accuracyg, col sep=comma] {products/acc.csv};
-			\addplot[red, fill=white, pattern color = red, postaction={pattern= sixpointed stars}] table[x=filename, y=bacr, col sep=comma] {products/bac.csv};
+			\addplot[black, fill=white, postaction={pattern=north east lines}] table[x=filename, y=accuracyg, col sep=comma] {products/acc.csv};
+			\addplot[red, fill=white, pattern color = red, postaction={pattern=north east lines}] table[x=filename, y=bacg, col sep=comma] {products/bac.csv};			
 		\end{axis}
 		\end{tikzpicture}
     }

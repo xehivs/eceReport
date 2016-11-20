@@ -1,0 +1,21 @@
+Aby zweryfikować skuteczność algorytmu, użyte zostało dziesięć baz benchmarkowych. Większość z nich pochodzi z bazy \textsc{ucimlr}\cite{asuncion2007uci} i zostały one wybrane tak, aby stworzyć możliwie różnorodną pulę problemów do rozwiązania. Selekcja została dokonana na bazie następujących wytycznych:
+
+\begin{itemize}
+	\item Zbiory powinny zawierać tak binarne (\emph{6 baz}) jak i wieloklasowe (\emph{4 bazy, po 3 i 4 klasy}) problemy do rozwiązania.
+	\item Zbiory powinny być zarówno nisko, jak i wysokowymiarowe (\emph{od 4 do 35 cech}).
+	\item Powinny być uwzględniane zarówno zbiory rzadkie (\emph{43 próbki dla bazy Soybean}) jak gęste (\emph{1000 próbek dla German}).
+	\item Cechy analizowanych zbiorów powinny być tak ciągłe (\emph{Iris}) jak i dyskretne (\emph{Balance}).
+\end{itemize}
+
+Krótki przegląd wszystkich wybranych zbiorów zawiera się w Tabeli \ref{tab:datasets_overview}.
+
+\begin{table*}[!ht]
+	\caption{Przegląd zbiorów danych}
+	\label{tab:datasets_overview}
+	\centering
+	\csvreader[tabular=lccc,
+        table head=zbiór danych & l. cech & l. próbek & l. klas \\\midrule,
+        late after line = \\]%
+    {comparison.csv }{dataset=\dataset,attributes=\attributes,samples=\samples,classes=\classes}%
+    {\emph{\dataset} & \attributes & \samples & \classes}%
+\end{table*}

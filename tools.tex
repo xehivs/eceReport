@@ -1,0 +1,125 @@
+Eksperyment badawczy powstał w oparciu o autorski \emph{framework} uczenia maszynowego \textsc{ksskml}\footnote{\url{https://github.com/w4k2/KSSKML}} i został zaimplementowany jako jego rozszerzenie, udostępnione w repozytorium paczek \verb|pip| jako moduł \textsc{ece}\footnote{\url{https://github.com/w4k2/ece}}, aktualnie w wersji \oldstylenums0.\oldstylenums6.\oldstylenums3.
+
+Zarówno framework \textsc{ksskml} jak i sam moduł \textsc{ece} są przedmiotem stałego rozwoju, a aby zapewnić ich poprawność i jakość kodu, każda aktualizacja jest weryfikowana przez zbiór testów jednostkowych i narzędzie badania jakości kodu. Współczynnik jakości kodu \textsc{gpa}, określany w skali od 0 do 4, dla frameworku wynosi 3.01, a dla modułu 3.33.
+
+Listingi 1 oraz 2 pokazują stopień pokrycia przez testy kodu utrzymywanego dla prowadzenia eksperymentów na algorytmie \textsc{ece}.
+
+\begin{lstlisting}[frame=single,caption=Pokrycie testów dla modułu \textsc{ece}]
+XML: ~/dev/ece/nosetests.xml
+Name             Stmts   Miss  Cover
+------------------------------------
+ece/ECE.py          61      0   100%
+ece/Exposer.py     175      0   100%
+ece.py               2      0   100%
+------------------------------------
+TOTAL              238      0   100%
+
+Ran 4 tests in 22.902s
+\end{lstlisting}
+
+\begin{lstlisting}[frame=single,caption=Pokrycie testów dla frameworku \textsc{ksskml}]
+XML: ~/dev/ksskml/nosetests.xml
+Name                   Stmts   Miss  Cover
+------------------------------------------
+ksskml/Classifier.py      10      2    80%
+ksskml/Dataset.py        103      1    99%
+ksskml/Ensemble.py        12      3    75%
+ksskml/KNN.py             30      0   100%
+ksskml/Sample.py          16      0   100%
+ksskml.py                  5      0   100%
+ksskml/utils.py            9      1    89%
+------------------------------------------
+TOTAL                    185      7    96%
+
+Ran 3 tests in 66.848s
+\end{lstlisting}
+
+Kod odpowiedzialny za przeprowadzenie eksperymentów zawartych w niniejszym raporcie, podsumowanie ich oraz sam tekst raportu zostały umieszczone w repozytorium w serwisie Github\footnote{\url{https://github.com/xehivs/eceReport}}. Listing 3 przedstawia kod przykładowego eksperymentu.
+
+\begin{lstlisting}[frame=single,language=Python,caption=Kod przykładowego eksperymentu]
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from ece import *
+from ksskml import *
+
+import sys
+import csv
+
+# Load dataset
+datafile = sys.argv[1]
+dbname = datafile.split('/')
+dbname = dbname[len(dbname) - 1]
+resampling = 200
+if len(sys.argv) > 2:
+    resampling = int(sys.argv[2])
+dataset = Dataset(datafile)
+
+# Predefined parameters
+parameters = {
+    'heart': {
+        'radius': 21,
+        'grain': 5
+    },...
+    'diabetes': {
+        'radius': 23,
+        'grain': 13
+    }
+}
+
+# Parameters to test
+dbn = dbname[:-4]
+
+radiuses = [parameters[dbn]['radius']]
+grains = [parameters[dbn]['grain']]
+folds = xrange(0, 5)
+approaches = [ECEApproach.random]
+limits = xrange(1, 20, 2)
+votingMethods = [ExposerVotingMethod.lone]
+i = 0
+amount = len(folds) * len(approaches) * \
+    len(votingMethods) * len(grains) * len(radiuses) * len(limits)
+print "\t%i instances to process" % amount
+
+with open('results/l_%s' % dbname, 'wb') as csvfile:
+    writer = csv.writer(csvfile, delimiter=',')
+    headers = ['fold', 'radius', 'grain', 'limit', 'accuracy', 'bac']
+    writer.writerow(headers)
+    for fold in folds:
+        dataset.setCV(fold)
+        for approach in approaches:
+            for limit in limits:
+                for votingMethod in votingMethods:
+                    for grain in grains:
+                        for radius in radiuses:
+                            dataset.clearSupports()
+
+                            fRadius = radius / 100.
+
+                            configuration = {
+                                'radius': radius,
+                                'grain': grain,
+                                'limit': limit,
+                                'dimensions': [2],
+                                'eceApproach': approach,
+                                'exposerVotingMethod': votingMethod
+                            }
+
+                            ensemble = ECE(dataset, configuration)
+                            ensemble.learn()
+                            ensemble.predict()
+                            scores = dataset.score()
+
+                            entry = {
+                                "dataset": dbname,
+                                "fold": fold,
+                            }
+
+                            entry.update(configuration)
+                            entry.update(scores)
+
+                            row = [fold, fRadius, grain, limit,
+                                entry['accuracy'], entry['bac']]
+                            print row
+                            writer.writerow(row)
+                            i += 1
+\end{lstlisting}

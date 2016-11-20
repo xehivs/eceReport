@@ -1,0 +1,132 @@
+	
+\begin{table*}[htb]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+     \parbox{.65\linewidth}{
+    
+	    Tabele 26--37, wraz z wykresami, przedstawiają wyniki osiągnięte przez algorytm dla najlepszego promienia oraz ziarna z poprzednich eksperymentów i parametrów \emph{limitu} z przedziału \oldstylenums{1}--\oldstylenums{19}\. Testy zostały przeprowadzone z wykorzystaniem walidacji krzyżowej \oldstylenums5v\oldstylenums2.
+    	
+    	W wypadku zbiorów zawierających problem wieloetykietowy, wartość \textsc{bac} została wyliczona jako uśrednienie z testów tego typu przeprowadzonych osobno dla każdej klasy względem konkatenacji próbek pozostałych klas.
+    }\hfill
+    \parbox{.32\linewidth}{
+	    \begin{ridel}{products/l_australian.csv}{Australian}\end{ridel}
+	}
+\end{table*}
+
+\begin{table*}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    
+    \parbox{.32\linewidth}{
+	    \begin{ridel}{products/l_balance.csv}{Balance}\end{ridel}
+	}
+	\hfill
+    \parbox{.32\linewidth}{
+	    \begin{ridel}{products/l_breastcan.csv}{Breastcan}\end{ridel}
+	}
+	\hfill
+    \parbox{.32\linewidth}{
+	    \begin{ridel}{products/l_diabetes.csv}{Diabetes}\end{ridel}
+	}
+\end{table*}
+
+
+\begin{table*}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.32\linewidth}{
+	    \begin{ridel}{products/l_german.csv}{German}\end{ridel}
+	}
+	\hfill
+    \parbox{.32\linewidth}{
+	    \begin{ridel}{products/l_hayes.csv}{Hayes}\end{ridel}
+	}
+	\hfill
+    \parbox{.32\linewidth}{
+	    \begin{ridel}{products/l_heart.csv}{Heart}\end{ridel}
+	}
+\end{table*}
+
+\begin{table*}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.32\linewidth}{
+	    \begin{ridel}{products/l_ionosphere.csv}{Ionosphere}\end{ridel}
+	}
+	\hfill
+    \parbox{.32\linewidth}{
+	    \begin{ridel}{products/l_iris.csv}{Iris}\end{ridel}
+	}
+	\hfill
+    \parbox{.32\linewidth}{
+	    \begin{ridel}{products/l_soybean.csv}{Soybean}\end{ridel}
+	}
+\end{table*}
+
+\begin{table*}[!ht]
+	\sisetup{round-mode=places}
+    \sisetup{
+		round-precision = 3,
+		round-integer-to-decimal
+	}
+    \parbox{.45\linewidth}{   
+		\caption{Najlepszy \emph{promień} względem accuracy}
+	    \label{tab:accuracy}
+		\centering
+		\begin{tabular}{lSS}
+			\toprule
+			{zbiór danych} & {limit} & {accuracy} \\\midrule		    \csvreader[head to column names]{products/acc.csv}{}%
+		    {\emph{\filename} & \limitl & \accuracyl\\}
+		\end{tabular}
+	}
+	\hfill
+	\parbox{.45\linewidth}{
+		\caption{Najlepszy \emph{promień} względem \textsc{bac}}
+	    \label{tab:bac}
+		\centering
+		\begin{tabular}{lS>{\color{red}}S}
+			\toprule
+			{zbiór danych} & {limit} & {\textsc{bac}} \\\midrule		    \csvreader[head to column names]{products/bac.csv}{}%
+		    {\emph{\filename} & \limitl & \bacl\\}
+		\end{tabular}
+	}
+	
+    \parbox{\linewidth}{
+    	\begin{tikzpicture}
+		\begin{axis}[
+			    ybar,
+			    width = \linewidth,
+			    bar width=0.3cm,
+			    height = 10cm,
+			    symbolic x coords={australian, balance, breastcan, diabetes, german, hayes, heart, ionosphere, iris, soybean},			    
+			    xtick=data,
+				minor tick num=4,
+			    grid=both,
+			    grid style={line width=.1pt, draw=gray!10},
+			    major grid style={line width=.2pt,draw=gray!50},
+			    ymin=0, ymax=1,
+			    ytick = {.5, .6, .7, .8, .9, 1},
+			    yticklabels = { 50\%, 60\%, 70\%, 80\%, 90\%, 100\%},
+				ticklabel style={font=\tiny,fill=white},				
+			    x tick label style={rotate=30,anchor=east},	
+		    ]
+			\addplot[black, fill=white, postaction={pattern=north east lines}] table[x=filename, y=accuracyl, col sep=comma] {products/acc.csv};
+			\addplot[red, fill=white, pattern color = red, postaction={pattern=north east lines}] table[x=filename, y=bacl, col sep=comma] {products/bac.csv};
+		\end{axis}
+		\end{tikzpicture}
+    }
+\end{table*}
+
+\FloatBarrier

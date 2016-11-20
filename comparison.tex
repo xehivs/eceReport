@@ -1,0 +1,24 @@
+\FloatBarrier
+\begin{table}[ht]
+	\caption{Podsumowanie rezultatów}
+	\vspace{.5cm}
+    \label{tab:podsumowanie}
+	\centering
+	\begin{tabular}{l>{\color{red}}ccccc}
+		& \textsc{ece} & \textsc{svm} & k-\textsc{nn} & \textsc{melm} & \textsc{fa}\\
+		\multicolumn{6}{l}{\tiny \bfseries problemy binarne}\\
+		\emph{Australian} &0.863 & 0.820 & 0.849 & \textbf{0.866} & 0.847\\
+		\emph{Breastcan} & \textbf{0.978} & 0.926 & 0.976 & 0.976 & 0.973\\
+		\emph{Diabetes} & 0.733  & \textbf{0.796} & 0.792 & 0.744 & 0.682\\
+		\emph{German} & 0.673 & \textbf{0.850} & 0.757 & 0.705 & 0.588\\
+		\emph{Heart} & 0.816 & 0.770 & 0.806 & \textbf{0.831} & 0.792\\
+		\emph{Ionosphere} & 0.763 & --- & --- & \textbf{0.892} & 0.794\\\\
+		\multicolumn{6}{l}{\tiny \bfseries problemy wieloetykietowe}\\
+		\emph{Balance} & 0.754 & --- & \textbf{0.876} & --- & ---\\		
+		\emph{Hayes} & \textbf{0.663} & --- & 0.620 & --- & ---\\
+		\emph{Iris} & 0.963 & --- & \textbf{0.967} & --- & ---\\
+		\emph{Soybean} & 0.939 & --- & \textbf{1.000} & --- & ---\\
+	\end{tabular}
+\end{table}
+
+Tabela \ref{tab:podsumowanie} prezentuje zestawienie najlepszych wyników z trzech przeprowadzonych eksperymentów i wyników dla konkurencyjnych klasyfikatorów bazowych, w podziale na problemy binarne oraz wieloetykietowe.

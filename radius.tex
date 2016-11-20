@@ -1,0 +1,131 @@
+\begin{table*}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.65\linewidth}{
+    	Tabele 2--13, wraz z wykresami, przedstawiają wyniki osiągnięte przez algorytm dla \emph{ziarna} oraz \emph{limitu} \oldstylenums{15} i parametrów \emph{promienia} z przedziału \oldstylenums{1}--\oldstylenums{29}\%. Testy zostały przeprowadzone z wykorzystaniem walidacji krzyżowej \oldstylenums5v\oldstylenums2.
+    	
+    	W wypadku zbiorów zawierających problem wieloetykietowy, wartość \textsc{bac} została wyliczona jako uśrednienie z testów tego typu przeprowadzonych osobno dla każdej klasy względem konkatenacji próbek pozostałych klas.
+	}
+	\hfill
+    \parbox{.32\linewidth}{
+	    \begin{ride}{products/r_soybean.csv}{Soybean}\end{ride}
+	}
+\end{table*}
+
+\begin{table*}[htb]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.32\linewidth}{
+	    \begin{ride}{products/r_australian.csv}{Australian}\end{ride}
+	}
+	\hfill
+    \parbox{.32\linewidth}{
+	    \begin{ride}{products/r_balance.csv}{Balance}\end{ride}
+	}
+	\hfill
+    \parbox{.32\linewidth}{
+	    \begin{ride}{products/r_breastcan.csv}{Breastcan}\end{ride}
+	}
+
+\end{table*}
+
+
+\begin{table*}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.32\linewidth}{
+	    \begin{ride}{products/r_diabetes.csv}{Diabetes}\end{ride}
+	}
+	\hfill
+    \parbox{.32\linewidth}{
+	    \begin{ride}{products/r_german.csv}{German}\end{ride}
+	}
+	\hfill
+    \parbox{.32\linewidth}{
+	    \begin{ride}{products/r_hayes.csv}{Hayes}\end{ride}
+	}
+\end{table*}
+
+\begin{table*}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.32\linewidth}{
+	    \begin{ride}{products/r_heart.csv}{Heart}\end{ride}
+	}
+	\hfill
+    \parbox{.32\linewidth}{
+	    \begin{ride}{products/r_ionosphere.csv}{Ionosphere}\end{ride}
+	}
+	\hfill
+    \parbox{.32\linewidth}{
+	    \begin{ride}{products/r_iris.csv}{Iris}\end{ride}
+	}
+\end{table*}
+
+\begin{table*}[!ht]
+	\sisetup{round-mode=places}
+    \sisetup{
+		round-precision = 3,
+		round-integer-to-decimal
+	}
+    \parbox{.49\linewidth}{   
+		\caption{Najlepszy \emph{promień} względem accuracy}
+	    \label{tab:accuracy}
+		\centering
+		\begin{tabular}{lSS}
+			\toprule
+			{zbiór danych} & {promień} & {accuracy} \\\midrule		    \csvreader[head to column names]{products/acc.csv}{}%
+		    {\emph{\filename} & \radiusr & \accuracyr\\}
+		\end{tabular}
+	}
+	\hfill
+	\parbox{.49\linewidth}{
+		\caption{Najlepszy \emph{promień} względem \textsc{bac}}
+	    \label{tab:bac}
+		\centering
+		\begin{tabular}{lS>{\color{red}}S}
+			\toprule
+			{zbiór danych} & {promień} & {\textsc{bac}} \\\midrule		    \csvreader[head to column names]{products/bac.csv}{}%
+		    {\emph{\filename} & \radiusr & \bacr\\}
+		\end{tabular}
+	}
+	
+    \parbox{\linewidth}{
+    	\begin{tikzpicture}
+		\begin{axis}[
+			    ybar,
+			    width = \linewidth,
+			    bar width=0.3cm,
+			    height = 10cm,
+			    symbolic x coords={australian, balance, breastcan, diabetes, german, hayes, heart, ionosphere, iris, soybean},			    
+			    xtick=data,
+			    grid=both,
+			    grid style={line width=.1pt, draw=gray!10},
+			    major grid style={line width=.2pt,draw=gray!50},
+			    ymin=0, ymax=1,
+				minor tick num=4,
+			    ytick = {.5, .6, .7, .8, .9, 1},
+			    yticklabels = { 50\%, 60\%, 70\%, 80\%, 90\%, 100\%},
+				ticklabel style={font=\tiny,fill=white},				
+			    x tick label style={rotate=30,anchor=east},	
+		    ]
+			\addplot[black, fill=white, postaction={pattern=north east lines}] table[x=filename, y=accuracyr, col sep=comma] {products/acc.csv};
+			\addplot[red, fill=white, pattern color = red, postaction={pattern=north east lines}] table[x=filename, y=bacr, col sep=comma] {products/bac.csv};
+		\end{axis}
+		\end{tikzpicture}
+    }
+\end{table*}
+
+\FloatBarrier

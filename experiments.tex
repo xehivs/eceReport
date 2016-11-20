@@ -1,0 +1,17 @@
+
+Algorytm \textsc{ece} charakteryzuje się wysoką parametryzacją. Jednostkowy ekspozer opisywany jest przez jego głębię przestrzenną (liczbę cech użytych do jego konstrukcji), promień oddziaływania próbek oraz ziarno kwantyzacji. Dobór ekspozerów do budowy komitetu może być prowadzony na jeden z trzech sposobów:
+	\begin{itemize}
+		\item kosztowny czasowo przegląd zupełny, 
+		\item nie dająca gwarancji poprawnej selekcji, ale szybka metoda losowych podzbiorów z limitem, oraz
+		\item kompromis w postaci heurystycznej metody z parametrem puli analizowanych ekspozerów oraz limitu członków końcowego komitetu.
+	\end{itemize}
+	
+Dodatkowo zaimplementowano w nim pięć rodzajów wag, wpływających na udział pojedynczego ekspozera w klasyfikatorze. Zakładając, że każdy składowy ekspozer jest określony przez takie same parametry wewnętrzne (co jest jedynie najprostszą jego odmianą), w obrębie eksperymentu mamy aż pięć zmiennych do przebadania, co w wypadku danych wielowymiarowych jest bardzo czasochłonne i zużywa bardzo duże ilości zasobów.
+
+W związku z tym, poniższe eksperymenty mają za zadanie określić, jak algorytm radzi sobie w warunkach ograniczonej parametryzacji. We wszystkich z nich została więc przyjęta metoda doboru klasyfikatorów do komitetu, oparta na losowych podzbiorach z limitem, a głosowanie odbywa się przy użyciu najprostszej metody, gdzie każdy klasyfikator bazowy ma taki sam wpływ na rezultat klasyfikacji. W oparciu o to założenie, zaproponowane zostały trzy eksperymenty:
+
+\begin{itemize}
+	\item Badanie wpływu na jakość klasyfikacji wartości promienia --- przy stałym ziarnie i limicie o wartości \verb|15|,
+	\item Badanie wpływu na jakość klasyfikacji wartości ziarna --- przy stałym promieniu o wartości \verb|9|\% i limicie o wartości \verb|15|,
+	\item Badanie wpływu na jakość klasyfikacji wartości limitu --- przy wartościach promienia i ziarna, które dały najlepsze rezultaty w poprzednich eksperymentach. 
+\end{itemize}

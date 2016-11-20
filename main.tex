@@ -16,6 +16,8 @@
 \title{Raport 4 z ECE}
 \author{Paweł Ksieniewicz}
 
+% To nie może być, gdyż juz duża część raportu była w poprzednim raporcie  (tyle, że po angielsku był w lipcu - w załączeniu). Może odwołaj się, że częściowo rezultaty były już publikowane (odwołaj się do raportu), ale w tym są rozszerzone raporty z zadań + analiza problemu dla danych niezbalansownych - tu proszę daj to co było/ma byc na ECML + napisz, że rezultat były prezentowane i zostaną niebawem opublikowane.
+% + można dać dokumentacje kodu, jeżeli powstał nowy
 
 \begin{document}
 \newenvironment{ride}[2]
@@ -84,9 +86,42 @@
 	\end{tikzpicture}
 }{}
 
+
+\newenvironment{ridel}[2]
+{
+	\caption{Zbiór \emph{#2}}
+    \label{tab:results}
+	\centering
+	\begin{tabular}{lS>{\color{red}}S}
+		\\\toprule{limit} & {accuracy} & {\textsc{bac}} \\\midrule	    \csvreader[head to column names]{#1}{}%
+	    {\limit & \accuracy & \bac\\}%
+	\end{tabular}
+	
+	\begin{tikzpicture}
+	\begin{axis}[
+	    grid=both,
+	    grid style={line width=.1pt, draw=gray!10},
+	    major grid style={line width=.2pt,draw=gray!50},
+	    width=6cm,
+	    height=8cm,
+	    xmin=1, xmax=19,
+	    ymin=.0, ymax=1,
+	    ytick = {.5, .6, .7, .8, .9, 1},
+	    yticklabels = { ~, 60\%, ~, 80\%, ~, 100\%},
+	    xtick = {1, 4, 7, 10, 13, 16, 19},
+		xticklabels = {~, 4,7,10,13,16,~},
+		xlabel = Limit,
+		minor tick num=2,
+		xlabel style={font=\tiny,fill=white},
+		ticklabel style={font=\tiny,fill=white}		]
+		\addplot[color=black] table [x=limit, y=accuracy, col sep=comma] {#1};
+		\addplot[color=red] table [x=limit, y=bac, col sep=comma] {#1};
+	\end{axis}
+	\end{tikzpicture}
+}{}
+
 \maketitle
 \newpage
-\begin{comment}
 \section{ECE --- \emph{Exposer Classifier Ensemble}}
 
 Ostatnimi czasy nurt \emph{representation learning} staje się coraz bardziej witalnym tematem badań dla środowiska uczenia maszynowego. Leżąca u jego podstaw idea twierdzi, że kluczem do skutecznej klasyfikacji trudnych zbiorów danych, jest odpowiednia ekstrakcja cech. Transformacja przestrzeni danych dostępnych w zbiorze do innej przestrzeni, w której samo zadanie się trywializuje. 
@@ -96,6 +131,7 @@ Poniższy raport prezentuje metodę transformacji przestrzeni cech, inspirowaną
 Tak stworzone struktury, można wykorzystywać zarówno jako klasyfikatory bazowe, jak i -- kiedy decydujemy się na zbiór podzbiorów cech -- komitety klasyfikatorów. Takie podejście jest, jak w większości metod obrazowych, łatwe do zrównoleglenia, jak i niezależne od wielkości próbki, odporne na zwiększenie liczby cech zbioru uczącego, jak i pozwala na regularyzację w przestrzeni cech, przeprowadzaną niezależnie od przestrzeni oryginalnego zbioru.
 
 Proponowana metoda została przetestowana eksperymentalnie na wyborze dziesięciu zbiorów benchmarkowych.
+\begin{comment}
 
 \subsection{\emph{Ekspozer}}
 \label{exposer}
@@ -634,6 +670,142 @@ Tabele \ref{tab:accuracy} oraz \ref{tab:bac} przedstawiają najlepsze osiągi dl
 \end{table*}
 
 Wyniki sumaryczne potwierdzają wysoką zdolność algorytmu do poprawnej klasyfikacji, przy niedużych promieniach, oscylujących w granicach \oldstylenums{10}\%.
+
+\FloatBarrier
+
+
+\subsubsection{Badanie wpływu limitu}
+
+Tabele 2--11 przedstawiają wyniki osiągnięte przez algorytm dla \emph{ziarna} \oldstylenums{15} i parametrów \emph{promienia} z przedziału \oldstylenums{1}--\oldstylenums{30}. Testy zostały przeprowadzone z wykorzystaniem walidacji krzyżowej \oldstylenums5v\oldstylenums2.
+
+\begin{table*}[htb]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.45\linewidth}{
+	    \begin{ridel}{products/l_australian.csv}{Australian}\end{ridel}
+	}
+	\hfill
+    \parbox{.45\linewidth}{
+	    \begin{ridel}{products/l_balance.csv}{Balance}\end{ridel}
+	}
+\end{table*}
+
+\begin{table*}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.45\linewidth}{
+	    \begin{ridel}{products/l_breastcan.csv}{Breastcan}\end{ridel}
+	}
+	\hfill
+    \parbox{.45\linewidth}{
+	    \begin{ridel}{products/l_diabetes.csv}{Diabetes}\end{ridel}
+	}
+\end{table*}
+
+
+\begin{table*}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.45\linewidth}{
+	    \begin{ridel}{products/l_german.csv}{German}\end{ridel}
+	}
+	\hfill
+    \parbox{.45\linewidth}{
+	    \begin{ridel}{products/l_hayes.csv}{Hayes}\end{ridel}
+	}
+\end{table*}
+
+\begin{table*}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.45\linewidth}{
+	    \begin{ridel}{products/l_heart.csv}{Heart}\end{ridel}
+	}
+	\hfill
+    \parbox{.45\linewidth}{
+	    \begin{ridel}{products/l_ionosphere.csv}{Ionosphere}\end{ridel}
+	}
+\end{table*}
+
+\begin{table*}[!ht]
+    \sisetup{round-mode=places}
+    \sisetup{
+    	round-precision = 3,
+    	round-integer-to-decimal
+    }
+    \parbox{.45\linewidth}{
+	    \begin{ridel}{products/l_iris.csv}{Iris}\end{ridel}
+	}
+	\hfill
+    \parbox{.45\linewidth}{
+	    \begin{ridel}{products/l_soybean.csv}{Soybean}\end{ridel}
+	}
+\end{table*}
+
+\begin{table*}[!ht]
+	\sisetup{round-mode=places}
+    \sisetup{
+		round-precision = 3,
+		round-integer-to-decimal
+	}
+    \parbox{.45\linewidth}{   
+		\caption{Najlepszy \emph{promień} względem accuracy}
+	    \label{tab:accuracy}
+		\centering
+		\begin{tabular}{lSS}
+			\toprule
+			{zbiór danych} & {limit} & {accuracy} \\\midrule		    \csvreader[head to column names]{products/acc.csv}{}%
+		    {\emph{\filename} & \limitl & \accuracyl\\}
+		\end{tabular}
+	}
+	\hfill
+	\parbox{.45\linewidth}{
+		\caption{Najlepszy \emph{promień} względem \textsc{bac}}
+	    \label{tab:bac}
+		\centering
+		\begin{tabular}{lS>{\color{red}}S}
+			\toprule
+			{zbiór danych} & {limit} & {\textsc{bac}} \\\midrule		    \csvreader[head to column names]{products/bac.csv}{}%
+		    {\emph{\filename} & \limitl & \bacl\\}
+		\end{tabular}
+	}
+	
+    \parbox{\linewidth}{
+    	\begin{tikzpicture}
+		\begin{axis}[
+			    ybar,
+			    width = 1.1\linewidth,
+			    bar width=0.2cm,
+			    height = 6cm,
+			    symbolic x coords={australian, balance, breastcan, diabetes, german, hayes, heart, ionosphere, iris, soybean},			    
+			    xtick=data,
+			    grid=both,
+			    grid style={line width=.1pt, draw=gray!10},
+			    major grid style={line width=.2pt,draw=gray!50},
+			    ymin=.45, ymax=1,
+			    ytick = {.5, .6, .7, .8, .9, 1},
+			    yticklabels = { 50\%, 60\%, 70\%, 80\%, 90\%, 100\%},
+				ticklabel style={font=\tiny,fill=white},				
+			    x tick label style={rotate=30,anchor=east},	
+		    ]
+			\addplot[black, fill=white, postaction={pattern=north east lines}] table[x=filename, y=accuracyl, col sep=comma] {products/acc.csv};
+			\addplot[red, fill=white, pattern color = red, postaction={pattern=north east lines}] table[x=filename, y=bacl, col sep=comma] {products/bac.csv};
+		\end{axis}
+		\end{tikzpicture}
+    }
+\end{table*}
 
 \FloatBarrier
 

@@ -48,7 +48,7 @@ for unit in data:
             'bac': sum(float(d['bac']) for d in records) / len(records),
             'radius': record['radius'],
             'grain': int(record['grain']),
-            'limit': record['limit']
+            'limit': int(record['limit'])
         }
         unitSummary[group] = summary
 
